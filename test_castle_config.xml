@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<activerecord>
+	<config>
+		<add key="hibernate.connection.driver_class" value="NHibernate.Driver.NpgsqlDriver" />
+		<add key="hibernate.dialect" value="NHibernate.Dialect.PostgreSQLDialect" />
+		<add key="hibernate.connection.provider" value="NHibernate.Connection.DriverConnectionProvider" />
+		<add key="hibernate.connection.connection_string" value="Server=localhost;Database=nhibernate;User ID=dick;Password=test" />
+	</config>
+</activerecord>
