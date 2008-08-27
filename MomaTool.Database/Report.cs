@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using Castle.ActiveRecord;
+using NHibernate;
 using NHibernate.Expression;
 
 namespace MomaTool.Database
@@ -184,6 +186,23 @@ namespace MomaTool.Database
 		{
 			return(FindOne (Expression.Eq ("ReportFilename", file)));
 		}
+
+        public static Report[] FindMostRecent(int count)
+        {
+            return(Report[])Execute(
+                delegate(ISession session, object instance) {
+                    IQuery query = session.CreateQuery("from Report r order by create_date desc");
+
+                    query.SetMaxResults(count);
+
+                    IList results = query.List();
+ 
+                    Report[] reports = new Report[results.Count];
+                    results.CopyTo(reports, 0);
+ 
+                    return reports;
+                }, null);
+        }
 		
 		public static Report CreateOrUpdate (string file,
 						     MomaDefinition def,
