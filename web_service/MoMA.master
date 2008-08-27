@@ -1,0 +1,51 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MoMA.master.cs" Inherits="MoMA" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>MoMA Studio</title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+        <link href="MoMA.css" rel="stylesheet" type="text/css" />
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
+        
+        <div class="header">
+            <div class="logo">
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/mono_logo_small.gif" />
+                <asp:Literal ID="Literal1" runat="server" Text="MoMA Studio"></asp:Literal>
+            </div>
+            <div class="login">
+                <asp:LoginName ID="LoginName1" runat="server" />
+                <asp:LoginStatus ID="LoginStatus1" runat="server" />
+            </div>
+        </div>
+        
+        <div class="menubar">
+            <asp:Menu ID="Menu1" runat="server" Orientation="Horizontal">
+                <StaticMenuItemStyle BorderStyle="Solid" BorderWidth="1" />
+                <Items>
+                    <asp:MenuItem NavigateUrl="~/Overview.aspx" Text="Overview" Value="Overview">
+                    </asp:MenuItem>
+                    <asp:MenuItem NavigateUrl="~/ReportView.aspx" Text="Individual Report" 
+                        Value="Individual Report"></asp:MenuItem>
+                    <asp:MenuItem Text="API Report" Value="API Report"></asp:MenuItem>
+                    <asp:MenuItem Text="Submissions Report" Value="Submissions Report">
+                    </asp:MenuItem>
+                </Items>
+            </asp:Menu>
+        </div>
+        
+        <div class="content">
+            <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+        
+    </div>
+    </form>
+</body>
+</html>
