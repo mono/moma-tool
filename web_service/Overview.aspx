@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="Overview.aspx.cs" Inherits="Overview" Title="MoMA Studio - Overview" %>
+<%@ Register TagPrefix="zgw" Namespace="ZedGraph.Web" Assembly="ZedGraph.Web" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="server">
     <asp:LoginView ID="LoginView1" runat="server">
@@ -34,6 +35,9 @@
                     <asp:BoundField DataField="Apps" HeaderText="Apps" />
                 </Columns>
             </asp:GridView>
+            <asp:Label ID="Label3" runat="server" Text="Issues per Application"></asp:Label>
+            <br />
+            <zgw:zedgraphweb ID="ZedGraph1" runat="server"></zgw:zedgraphweb>
         </LoggedInTemplate>
     </asp:LoginView>
 </asp:Content>

@@ -14,6 +14,9 @@ using System.Xml.Linq;
 
 using MomaTool.Database.Linq;
 using Npgsql;
+using System.Drawing;
+using ZedGraph;
+using ZedGraph.Web;
 
 public partial class Overview : System.Web.UI.Page
 {
@@ -241,6 +244,32 @@ public partial class Overview : System.Web.UI.Page
         }
     }
 
+    public class OverviewIssueCount
+    {
+        public OverviewIssueCount()
+        {
+            this._Count = 0;
+        }
+
+        public OverviewIssueCount(int count)
+        {
+            this._Count = count;
+        }
+
+        private int _Count;
+        public int Count
+        {
+            get
+            {
+                return _Count;
+            }
+            set
+            {
+                _Count = value;
+            }
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         // GridView1 only available to logged-in users
@@ -293,5 +322,55 @@ public partial class Overview : System.Web.UI.Page
             grid2.DataSource = grid2_q;
             grid2.DataBind();
         }
+    }
+
+    protected override void OnInit(EventArgs e)
+    {
+        InitializeComponent();
+        base.OnInit(e);
+    }
+
+    private void InitializeComponent()
+    {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            ZedGraphWeb zg1 = (ZedGraphWeb)LoginView1.FindControl("ZedGraph1");
+            zg1.RenderGraph += new ZedGraph.Web.ZedGraphWebControlEventHandler(this.OnRenderGraph1);
+        }
+    }
+
+    private void OnRenderGraph1(ZedGraphWeb zgw, Graphics g, MasterPane masterPane)
+    {
+        string connstr = ConfigurationManager.ConnectionStrings["MomaDB"].ConnectionString;
+        NpgsqlConnection conn = new NpgsqlConnection(connstr);
+        MoMADB db = new MoMADB(conn);
+        var issue_count_q = db.ExecuteQuery<OverviewIssueCount>(@"select count(issue.report_id) as Count from issue group by issue.report_id;").ToList();
+
+        GraphPane myPane = masterPane[0];
+        PieItem segment1 = myPane.AddPieSlice(0, Color.FromArgb(0xf5, 0xeb, 0xcb), Color.White, 45f, 0, "1-5");
+        PieItem segment2 = myPane.AddPieSlice(0, Color.FromArgb(0xec, 0xc5, 0x6b), Color.White, 45f, 0, "6-25");
+        PieItem segment3 = myPane.AddPieSlice(0, Color.FromArgb(0xe2, 0x9f, 0x27), Color.White, 45f, 0, "26+");
+
+        segment1.LabelDetail.FontSpec.Size = 20f;
+        segment2.LabelDetail.FontSpec.Size = 20f;
+        segment3.LabelDetail.FontSpec.Size = 20f;
+
+        foreach (OverviewIssueCount count in issue_count_q)
+        {
+            if (count.Count < 6)
+            {
+                segment1.Value++;
+            }
+            else if (count.Count < 26)
+            {
+                segment2.Value++;
+            }
+            else
+            {
+                segment3.Value++;
+            }
+        }
+
+        masterPane.AxisChange(g);
     }
 }
