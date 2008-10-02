@@ -5,9 +5,6 @@
     void Application_Start(object sender, EventArgs e) 
     {
         // Code that runs on application startup
-        Castle.ActiveRecord.Framework.IConfigurationSource source = System.Configuration.ConfigurationManager.GetSection("activerecord") as Castle.ActiveRecord.Framework.IConfigurationSource;
-        System.Reflection.Assembly ass = System.Reflection.Assembly.Load("MomaTool.Database");
-        Castle.ActiveRecord.ActiveRecordStarter.Initialize(ass, source);
     }
     
     void Application_End(object sender, EventArgs e) 

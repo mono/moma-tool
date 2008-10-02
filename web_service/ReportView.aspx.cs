@@ -11,7 +11,8 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 
-using MomaTool.Database;
+using MomaTool.Database.Linq;
+using Npgsql;
 
 public partial class ReportView : System.Web.UI.Page
 {
@@ -31,10 +32,20 @@ public partial class ReportView : System.Web.UI.Page
             {
                 id = 1;
             }
+            
+            string connstr = ConfigurationManager.ConnectionStrings["MomaDB"].ConnectionString;
+            NpgsqlConnection conn = new NpgsqlConnection(connstr);
+            MoMADB db = new MoMADB(conn);
 
             // ... and we need to find it from inside the LoginView
             GridView grid = (GridView)LoginView1.FindControl("GridView1");
-            grid.DataSource = MomaTool.Database.Report.FindAllByProperty("Id", id);
+            grid.DataSource = (from rep in db.Report
+                               where rep.ID == id
+                               select new {
+                                   ID = rep.ID,
+                                   ReportFileName = rep.ReportFilename,
+                                   ReporterName = rep.ReporterName
+                               });
             grid.DataBind();
         }
     }
