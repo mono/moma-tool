@@ -276,7 +276,7 @@ public partial class Overview : System.Web.UI.Page
         if (Page.User.Identity.IsAuthenticated)
         {
             // ... and we need to find it from inside the LoginView
-            GridView grid1 = (GridView)LoginView1.FindControl("GridView1");
+            GridView grid1 = (GridView)LoginView1.FindControl("Latest20GridView");
 
             string connstr = ConfigurationManager.ConnectionStrings["MomaDB"].ConnectionString;
             NpgsqlConnection conn = new NpgsqlConnection(connstr);
@@ -304,6 +304,16 @@ public partial class Overview : System.Web.UI.Page
              */
             foreach (OverviewData ov in grid1_q)
             {
+                /* This works with MS LINQ, but not with DBLINQ - the ToArray() blows up */
+#if NAUGHT
+                var q = (from iss in db.Issue where iss.ReportID == ov.ID group iss by iss.IssueTypeID into g orderby g.Key select new { issue_type_id = g.Key, Count = g.Count() }).ToArray();
+
+                ov.Miss = q[miss_id].Count;
+                ov.Niex = q[niex_id].Count;
+                ov.Pinv = q[pinv_id].Count;
+                ov.Todo = q[todo_id].Count;
+#endif
+
                 ov.Miss = (from issue in db.Issue where issue.ReportID == ov.ID && issue.IssueTypeID == miss_id select issue.ID).ToList().Count;
                 ov.Niex = (from issue in db.Issue where issue.ReportID == ov.ID && issue.IssueTypeID == niex_id select issue.ID).ToList().Count;
                 ov.Pinv = (from issue in db.Issue where issue.ReportID == ov.ID && issue.IssueTypeID == pinv_id select issue.ID).ToList().Count;
@@ -314,7 +324,7 @@ public partial class Overview : System.Web.UI.Page
             grid1.DataSource = grid1_q;
             grid1.DataBind();
 
-            GridView grid2 = (GridView)LoginView1.FindControl("GridView2");
+            GridView grid2 = (GridView)LoginView1.FindControl("MostNeededGridView");
 
             /* FIXME: figure out the LINQ version of the count(distinct)... */
             var grid2_q = db.ExecuteQuery<OverviewMostNeeded>(@"select count(distinct(issue.report_id)) as Apps, issue.method_namespace as Namespace, issue.method_class as Class, issue.method_name as Method, issue_type.display_name as Type from issue, issue_type where issue_type.id = issue.issue_type_id group by method_namespace, method_class, method_name, display_name order by Apps desc limit 20;");
@@ -334,7 +344,7 @@ public partial class Overview : System.Web.UI.Page
     {
         if (Page.User.Identity.IsAuthenticated)
         {
-            ZedGraphWeb zg1 = (ZedGraphWeb)LoginView1.FindControl("ZedGraph1");
+            ZedGraphWeb zg1 = (ZedGraphWeb)LoginView1.FindControl("IssuesPerAppGraph");
             zg1.RenderGraph += new ZedGraph.Web.ZedGraphWebControlEventHandler(this.OnRenderGraph1);
         }
     }

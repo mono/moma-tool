@@ -1,4 +1,4 @@
-#region Auto-generated classes for nhibernate database on 2008-09-03 16:20:12Z
+#region Auto-generated classes for nhibernate database on 2008-10-13 17:08:47Z
 
 //
 //  ____  _     __  __      _        _
@@ -7,7 +7,7 @@
 // | |_| | |_) | |  | |  __/ || (_| | |
 // |____/|_.__/|_|  |_|\___|\__\__,_|_|
 //
-// Auto-generated from nhibernate on 2008-09-03 16:20:12Z
+// Auto-generated from nhibernate on 2008-10-13 17:08:47Z
 // Please visit http://linq.to/db for more information
 
 #endregion
@@ -42,6 +42,8 @@ namespace MomaTool.Database.Linq
 		public Table<IssueType> IssueType { get { return GetTable<IssueType>(); } }
 		public Table<MomADefinition> MomADefinition { get { return GetTable<MomADefinition>(); } }
 		public Table<Report> Report { get { return GetTable<Report>(); } }
+		public Table<ReportComment> ReportComment { get { return GetTable<ReportComment>(); } }
+		public Table<ReportMetadata> ReportMetadata { get { return GetTable<ReportMetadata>(); } }
 
 	}
 
@@ -249,21 +251,6 @@ namespace MomaTool.Database.Linq
 
 		#region Parents
 
-		private System.Data.Linq.EntityRef<IssueType> issueType;
-		[Association(Storage = "issueType", ThisKey = "IssueTypeID", Name = "fk_issue_issue_type")]
-		[DebuggerNonUserCode]
-		public IssueType IssueType
-		{
-			get
-			{
-				return issueType.Entity;
-			}
-			set
-			{
-				issueType.Entity = value;
-			}
-		}
-
 		private System.Data.Linq.EntityRef<Report> report;
 		[Association(Storage = "report", ThisKey = "ReportID", Name = "fk_issue_report")]
 		[DebuggerNonUserCode]
@@ -276,6 +263,21 @@ namespace MomaTool.Database.Linq
 			set
 			{
 				report.Entity = value;
+			}
+		}
+
+		private System.Data.Linq.EntityRef<IssueType> issueType;
+		[Association(Storage = "issueType", ThisKey = "IssueTypeID", Name = "fk_issue_issue_type")]
+		[DebuggerNonUserCode]
+		public IssueType IssueType
+		{
+			get
+			{
+				return issueType.Entity;
+			}
+			set
+			{
+				issueType.Entity = value;
 			}
 		}
 
@@ -939,6 +941,28 @@ namespace MomaTool.Database.Linq
 			}
 		}
 
+		[Association(Storage = null, OtherKey = "ReportID", Name = "report_metadata_report_id_fkey")]
+		[DebuggerNonUserCode]
+		public EntityMSet<ReportMetadata> ReportMetadata
+		{
+			get
+			{
+				// L212 - child data available only when part of query
+				return null;
+			}
+		}
+
+		[Association(Storage = null, OtherKey = "ReportID", Name = "report_comment_report_id_fkey")]
+		[DebuggerNonUserCode]
+		public EntityMSet<ReportComment> ReportComment
+		{
+			get
+			{
+				// L212 - child data available only when part of query
+				return null;
+			}
+		}
+
 
 		#endregion
 
@@ -956,6 +980,339 @@ namespace MomaTool.Database.Linq
 			set
 			{
 				momAdEfinition.Entity = value;
+			}
+		}
+
+
+		#endregion
+
+	}
+
+	[Table(Name = "public.report_comment")]
+	public partial class ReportComment : INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanged handling
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		#endregion
+
+		#region string Comment
+
+		private string comment;
+		[DebuggerNonUserCode]
+		[Column(Storage = "comment", Name = "comment", DbType = "text", CanBeNull = false, Expression = null)]
+		public string Comment
+		{
+			get
+			{
+				return comment;
+			}
+			set
+			{
+				if (value != comment)
+				{
+					comment = value;
+					OnPropertyChanged("Comment");
+				}
+			}
+		}
+
+		#endregion
+
+		#region System.DateTime CommentDate
+
+		private System.DateTime commentDate;
+		[DebuggerNonUserCode]
+		[Column(Storage = "commentDate", Name = "comment_date", DbType = "timestamp without time zone", CanBeNull = false, Expression = null)]
+		public System.DateTime CommentDate
+		{
+			get
+			{
+				return commentDate;
+			}
+			set
+			{
+				if (value != commentDate)
+				{
+					commentDate = value;
+					OnPropertyChanged("CommentDate");
+				}
+			}
+		}
+
+		#endregion
+
+		#region string CommentER
+
+		private string commentEr;
+		[DebuggerNonUserCode]
+		[Column(Storage = "commentEr", Name = "commenter", DbType = "character varying(255)", CanBeNull = false, Expression = null)]
+		public string CommentER
+		{
+			get
+			{
+				return commentEr;
+			}
+			set
+			{
+				if (value != commentEr)
+				{
+					commentEr = value;
+					OnPropertyChanged("CommentER");
+				}
+			}
+		}
+
+		#endregion
+
+		#region bool EmailEd
+
+		private bool emailEd;
+		[DebuggerNonUserCode]
+		[Column(Storage = "emailEd", Name = "emailed", DbType = "boolean", CanBeNull = false, Expression = null)]
+		public bool EmailEd
+		{
+			get
+			{
+				return emailEd;
+			}
+			set
+			{
+				if (value != emailEd)
+				{
+					emailEd = value;
+					OnPropertyChanged("EmailEd");
+				}
+			}
+		}
+
+		#endregion
+
+		#region int ID
+
+		[AutoGenId]
+		private int id;
+		[DebuggerNonUserCode]
+		[Column(Storage = "id", Name = "id", DbType = "integer(32,0)", IsPrimaryKey = true, IsDbGenerated = true, CanBeNull = false, Expression = "nextval('report_comment_id_seq')")]
+		public int ID
+		{
+			get
+			{
+				return id;
+			}
+			set
+			{
+				if (value != id)
+				{
+					id = value;
+					OnPropertyChanged("ID");
+				}
+			}
+		}
+
+		#endregion
+
+		#region int ReportID
+
+		private int reportID;
+		[DebuggerNonUserCode]
+		[Column(Storage = "reportID", Name = "report_id", DbType = "integer(32,0)", CanBeNull = false, Expression = null)]
+		public int ReportID
+		{
+			get
+			{
+				return reportID;
+			}
+			set
+			{
+				if (value != reportID)
+				{
+					reportID = value;
+					OnPropertyChanged("ReportID");
+				}
+			}
+		}
+
+		#endregion
+
+		#region Parents
+
+		private System.Data.Linq.EntityRef<Report> report;
+		[Association(Storage = "report", ThisKey = "ReportID", Name = "report_comment_report_id_fkey")]
+		[DebuggerNonUserCode]
+		public Report Report
+		{
+			get
+			{
+				return report.Entity;
+			}
+			set
+			{
+				report.Entity = value;
+			}
+		}
+
+
+		#endregion
+
+	}
+
+	[Table(Name = "public.report_metadata")]
+	public partial class ReportMetadata : INotifyPropertyChanged
+	{
+		#region INotifyPropertyChanged handling
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged(string propertyName)
+		{
+			if (PropertyChanged != null)
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		#endregion
+
+		#region string ApplicationName
+
+		private string applicationName;
+		[DebuggerNonUserCode]
+		[Column(Storage = "applicationName", Name = "application_name", DbType = "character varying(200)", Expression = null)]
+		public string ApplicationName
+		{
+			get
+			{
+				return applicationName;
+			}
+			set
+			{
+				if (value != applicationName)
+				{
+					applicationName = value;
+					OnPropertyChanged("ApplicationName");
+				}
+			}
+		}
+
+		#endregion
+
+		#region string ApplicationType
+
+		private string applicationType;
+		[DebuggerNonUserCode]
+		[Column(Storage = "applicationType", Name = "application_type", DbType = "character varying(100)", Expression = null)]
+		public string ApplicationType
+		{
+			get
+			{
+				return applicationType;
+			}
+			set
+			{
+				if (value != applicationType)
+				{
+					applicationType = value;
+					OnPropertyChanged("ApplicationType");
+				}
+			}
+		}
+
+		#endregion
+
+		#region int ID
+
+		[AutoGenId]
+		private int id;
+		[DebuggerNonUserCode]
+		[Column(Storage = "id", Name = "id", DbType = "integer(32,0)", IsPrimaryKey = true, IsDbGenerated = true, CanBeNull = false, Expression = "nextval('report_metadata_id_seq')")]
+		public int ID
+		{
+			get
+			{
+				return id;
+			}
+			set
+			{
+				if (value != id)
+				{
+					id = value;
+					OnPropertyChanged("ID");
+				}
+			}
+		}
+
+		#endregion
+
+		#region string Importance
+
+		private string importance;
+		[DebuggerNonUserCode]
+		[Column(Storage = "importance", Name = "importance", DbType = "character varying(100)", Expression = null)]
+		public string Importance
+		{
+			get
+			{
+				return importance;
+			}
+			set
+			{
+				if (value != importance)
+				{
+					importance = value;
+					OnPropertyChanged("Importance");
+				}
+			}
+		}
+
+		#endregion
+
+		#region int ReportID
+
+		private int reportID;
+		[DebuggerNonUserCode]
+		[Column(Storage = "reportID", Name = "report_id", DbType = "integer(32,0)", CanBeNull = false, Expression = null)]
+		public int ReportID
+		{
+			get
+			{
+				return reportID;
+			}
+			set
+			{
+				if (value != reportID)
+				{
+					reportID = value;
+					OnPropertyChanged("ReportID");
+				}
+			}
+		}
+
+		#endregion
+
+		#region Parents
+
+		private System.Data.Linq.EntityRef<Report> report;
+		[Association(Storage = "report", ThisKey = "ReportID", Name = "report_metadata_report_id_fkey")]
+		[DebuggerNonUserCode]
+		public Report Report
+		{
+			get
+			{
+				return report.Entity;
+			}
+			set
+			{
+				report.Entity = value;
 			}
 		}
 

@@ -7,9 +7,9 @@
             This view is only available to logged-in users.
         </AnonymousTemplate>
         <LoggedInTemplate>
-            <asp:Label ID="Label1" runat="server" Text="Latest 20 Reports:"></asp:Label>
+            <asp:Label ID="Latest20Label" runat="server" Text="Latest 20 Reports:"></asp:Label>
             <br />
-            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False">
+            <asp:GridView ID="Latest20GridView" runat="server" AutoGenerateColumns="False">
                 <Columns>
                     <asp:HyperLinkField DataNavigateUrlFields="ID" DataNavigateUrlFormatString="~/ReportView.aspx?ReportID={0}"
                         HeaderText="Details" Text="View" />
@@ -24,9 +24,9 @@
                     <asp:BoundField DataField="Total" HeaderText="Total" />
                 </Columns>
             </asp:GridView>
-            <asp:Label ID="Label2" runat="server" Text="Most needed API:"></asp:Label>
+            <asp:Label ID="MostNeededLabel" runat="server" Text="Most needed API:"></asp:Label>
             <br />
-            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False">
+            <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False">
                 <Columns>
                     <asp:BoundField DataField="Namespace" HeaderText="Namespace" />
                     <asp:BoundField DataField="Class" HeaderText="Class" />
@@ -35,9 +35,9 @@
                     <asp:BoundField DataField="Apps" HeaderText="Apps" />
                 </Columns>
             </asp:GridView>
-            <asp:Label ID="Label3" runat="server" Text="Issues per Application"></asp:Label>
+            <asp:Label ID="IssuesPerAppLabel" runat="server" Text="Issues per Application"></asp:Label>
             <br />
-            <zgw:zedgraphweb ID="ZedGraph1" runat="server"></zgw:zedgraphweb>
+            <zgw:zedgraphweb ID="IssuesPerAppGraph" runat="server"></zgw:zedgraphweb>
         </LoggedInTemplate>
     </asp:LoginView>
 </asp:Content>

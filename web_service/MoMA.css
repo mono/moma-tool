@@ -27,4 +27,21 @@
 
 .content
 {
+    /* Make this the context box for the main body content */
+    position: relative;
+}
+
+.reportview_metadata
+{
+    float: left;
+}
+
+.reportview_comments
+{
+    float: right;
+}
+
+.reportview_issues
+{
+    clear: both;
 }
