@@ -1,0 +1,90 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+using MomaTool.Database.Linq;
+using System.Data.Linq;
+using Npgsql;
+
+/// <summary>
+/// Summary description for MoMADBSupport
+/// </summary>
+public class MoMADBSupport
+{
+	public MoMADBSupport()
+	{
+	}
+
+    public static Report GetReport(MoMADB db, int id)
+    {
+        Report report = (from rep in db.Report
+                         where rep.ID == id
+                         select rep).First();
+
+        return report;
+    }
+
+    public static MomADefinition GetMomaDefinition(MoMADB db, int? def_id)
+    {
+        MomADefinition definition = (from def in db.MomADefinition
+                                     where def.ID == def_id
+                                     select def).First();
+
+        return definition;
+    }
+
+    public static ReportMetadata GetMetadata(MoMADB db, int report_id)
+    {
+        // FirstOrDefault() doesn't work in dblinq, and this can fail if noone has created the
+        // metadata entry yet, so we have to fart about with the array instead
+        ReportMetadata report_meta;
+        var report_meta_q = (from rep_meta in db.ReportMetadata
+                             where rep_meta.ReportID == report_id
+                             select rep_meta).ToArray();
+        if (report_meta_q.Length == 0)
+        {
+            // Need to create a default metadata entry
+            report_meta = new ReportMetadata();
+            report_meta.ReportID = report_id;
+            report_meta.Importance = "Useful";
+            report_meta.ApplicationName = "";
+            report_meta.ApplicationType = "";
+
+            db.ReportMetadata.InsertOnSubmit(report_meta);
+            db.SubmitChanges(ConflictMode.FailOnFirstConflict);
+        }
+        else
+        {
+            report_meta = report_meta_q[0];
+        }
+
+        return report_meta;
+    }
+
+    public static ReportComment[] GetComments(MoMADB db, int report_id)
+    {
+        ReportComment[] comment_q = (from comm in db.ReportComment
+                                     where comm.ReportID == report_id
+                                     orderby comm.CommentDate ascending
+                                     select comm).ToArray();
+
+        return comment_q;
+    }
+
+    public static MoMADB OpenDB()
+    {
+        string connstr = ConfigurationManager.ConnectionStrings["MomaDB"].ConnectionString;
+        NpgsqlConnection conn = new NpgsqlConnection(connstr);
+        MoMADB db = new MoMADB(conn);
+
+        return db;
+    }
+}

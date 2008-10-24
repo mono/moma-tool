@@ -1,0 +1,20 @@
+﻿using DbLinq.Linq;
+
+using MomaTool.Database.Linq;
+
+public class MomaDataContext
+{
+    private MoMADB _db;
+
+    public MomaDataContext()
+    {
+        _db = MoMADBSupport.OpenDB();
+    }
+
+    public Table<Issue> Issue { get { return _db.GetTable<Issue>(); } }
+    public Table<IssueType> IssueType { get { return _db.GetTable<IssueType>(); } }
+    public Table<MomADefinition> MomADefinition { get { return _db.GetTable<MomADefinition>(); } }
+    public Table<Report> Report { get { return _db.GetTable<Report>(); } }
+    public Table<ReportComment> ReportComment { get { return _db.GetTable<ReportComment>(); } }
+    public Table<ReportMetadata> ReportMetadata { get { return _db.GetTable<ReportMetadata>(); } }
+}
