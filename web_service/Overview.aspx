@@ -11,14 +11,14 @@
             <br />
             <asp:SqlDataSource ID="Latest20SqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                 ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>"
-                SelectCommand="SELECT a.id, a.create_date, a.reporter_name, a.display_name, miss.miss, niex.niex, pinv.pinv, todo.todo, total.total FROM (SELECT rep.id, rep.create_date, rep.reporter_name, prof.display_name FROM report rep, moma_definition prof WHERE rep.moma_definition_id = prof.id) AS a, (SELECT report_id, COUNT(report_id) AS miss FROM issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' GROUP BY report_id) AS miss, (SELECT report_id, COUNT(report_id) AS niex FROM issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' GROUP BY report_id) AS niex, (SELECT report_id, COUNT(report_id) AS pinv FROM issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'PINV' GROUP BY report_id) AS pinv, (SELECT report_id, COUNT(report_id) AS todo FROM issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' GROUP BY report_id) AS todo, (SELECT report_id, COUNT(report_id) AS total FROM issue GROUP BY report_id) AS total WHERE (a.id = miss.report_id) AND (a.id = niex.report_id) AND (a.id = pinv.report_id) AND (a.id = todo.report_id) AND (a.id = total.report_id) ORDER BY a.create_date DESC LIMIT 20;">
+                SelectCommand="SELECT rep.id, rep.report_date, rep.reporter_name, def.display_name, miss.miss, niex.niex, pinv.pinv, todo.todo, total.total FROM moma_definition def, report rep LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS miss FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' AND issue_report.issue_id = issue.id GROUP BY report_id) AS miss ON rep.id = miss.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS niex FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' AND issue_report.issue_id = issue.id GROUP BY report_id) AS niex ON rep.id = niex.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS pinv FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'PINV' AND issue_report.issue_id = issue.id GROUP BY report_id) AS pinv ON rep.id = pinv.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS todo FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' AND issue_report.issue_id = issue.id GROUP BY report_id) AS todo ON rep.id = todo.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS total FROM issue_report GROUP BY report_id) AS total ON rep.id = total.report_id WHERE rep.moma_definition_id = def.id ORDER BY rep.report_date DESC LIMIT 20;">
             </asp:SqlDataSource>
             <asp:GridView ID="Latest20GridView" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="Latest20SqlDataSource">
                 <Columns>
                     <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/ReportView.aspx?ReportID={0}"
                         HeaderText="Details" Text="View" />
-                    <asp:BoundField DataField="create_date" HeaderText="Date" />
+                    <asp:BoundField DataField="report_date" HeaderText="Date" />
                     <asp:BoundField DataField="id" HeaderText="ID" />
                     <asp:BoundField DataField="reporter_name" HeaderText="Name" />
                     <asp:BoundField DataField="display_name" HeaderText="Profile" />
@@ -31,9 +31,8 @@
             </asp:GridView>
             <asp:Label ID="MostNeededLabel" runat="server" Text="Most needed API:"></asp:Label>
             <br />
-<%--
             <asp:SqlDataSource ID="MostNeededSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(DISTINCT(issue.report_id)) AS Apps, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id GROUP BY method_namespace, method_class, method_name, display_name ORDER BY Apps DESC LIMIT 20;">
+                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY Apps DESC LIMIT 20;">
             </asp:SqlDataSource>
             <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False" DataSourceID="MostNeededSqlDataSource">
                 <Columns>
@@ -44,9 +43,8 @@
                     <asp:BoundField DataField="Apps" HeaderText="Apps" />
                 </Columns>
             </asp:GridView>
---%>
             <asp:SqlDataSource ID="IssuesPerAppSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(issue.report_id) AS Count FROM issue GROUP BY issue.report_id;">
+                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report GROUP BY report_id;">
             </asp:SqlDataSource>
             <asp:Label ID="IssuesPerAppLabel" runat="server" Text="Issues per Application"></asp:Label>
             <br />

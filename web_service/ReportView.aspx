@@ -107,7 +107,7 @@
                 <asp:UpdatePanel ID="IssuesUpdatePanel" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
                         <asp:SqlDataSource ID="IssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss WHERE iss.report_id = @id AND iss.issue_type_id = type.id;">
+                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id;">
                             <SelectParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID"
                                     Type="Int32" />
