@@ -17,4 +17,33 @@ public partial class APIReport : System.Web.UI.Page
     {
 
     }
+    protected void IssuesSqlDataSource_Filtering(object sender, SqlDataSourceFilteringEventArgs e)
+    {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            string filter = string.Empty;
+
+            foreach (ListItem item in IssueTypeFilterListBox.Items)
+            {
+                if (item.Selected)
+                {
+                    if (filter != string.Empty)
+                    {
+                        filter += " OR ";
+                    }
+                    filter += "lookup_name='" + item.Value + "'";
+                }
+            }
+
+            // If nothing selected, the empty string will filter nothing
+            IssuesSqlDataSource.FilterExpression = filter;
+        }
+    }
+    protected void IssueTypeFilterButton_Click(object sender, EventArgs e)
+    {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            IssuesGridView.DataBind();
+        }
+    }
 }

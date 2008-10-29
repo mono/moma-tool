@@ -11,7 +11,7 @@
             <br />
             <asp:SqlDataSource ID="Latest20SqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                 ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>"
-                SelectCommand="SELECT rep.id, rep.report_date, rep.reporter_name, def.display_name, miss.miss, niex.niex, pinv.pinv, todo.todo, total.total FROM moma_definition def, report rep LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS miss FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' AND issue_report.issue_id = issue.id GROUP BY report_id) AS miss ON rep.id = miss.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS niex FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' AND issue_report.issue_id = issue.id GROUP BY report_id) AS niex ON rep.id = niex.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS pinv FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'PINV' AND issue_report.issue_id = issue.id GROUP BY report_id) AS pinv ON rep.id = pinv.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS todo FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' AND issue_report.issue_id = issue.id GROUP BY report_id) AS todo ON rep.id = todo.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS total FROM issue_report GROUP BY report_id) AS total ON rep.id = total.report_id WHERE rep.moma_definition_id = def.id ORDER BY rep.report_date DESC LIMIT 20;">
+                SelectCommand="SELECT rep.id, rep.report_date, rep.reporter_name, def.display_name, meta.importance, miss.miss, niex.niex, pinv.pinv, todo.todo, total.total FROM moma_definition def, report rep LEFT JOIN report_metadata meta ON rep.id = meta.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS miss FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' AND issue_report.issue_id = issue.id GROUP BY report_id) AS miss ON rep.id = miss.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS niex FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' AND issue_report.issue_id = issue.id GROUP BY report_id) AS niex ON rep.id = niex.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS pinv FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'PINV' AND issue_report.issue_id = issue.id GROUP BY report_id) AS pinv ON rep.id = pinv.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS todo FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' AND issue_report.issue_id = issue.id GROUP BY report_id) AS todo ON rep.id = todo.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS total FROM issue_report GROUP BY report_id) AS total ON rep.id = total.report_id WHERE rep.moma_definition_id = def.id ORDER BY rep.report_date DESC LIMIT 20;" EnableCaching="True" CacheDuration="300">
             </asp:SqlDataSource>
             <asp:GridView ID="Latest20GridView" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="Latest20SqlDataSource">
@@ -27,12 +27,17 @@
                     <asp:BoundField DataField="pinv" HeaderText="PINV" />
                     <asp:BoundField DataField="todo" HeaderText="TODO" />
                     <asp:BoundField DataField="total" HeaderText="Total" />
+                    <asp:TemplateField ShowHeader="False">
+                        <ItemTemplate>
+                            <asp:Image ID="ImportanceImage" runat="server" ImageUrl="~/important.png" Visible='<%# Eval("importance").ToString() == "Important" %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
             <asp:Label ID="MostNeededLabel" runat="server" Text="Most needed API:"></asp:Label>
             <br />
             <asp:SqlDataSource ID="MostNeededSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY Apps DESC LIMIT 20;">
+                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY Apps DESC LIMIT 20;" EnableCaching="True" CacheDuration="300">
             </asp:SqlDataSource>
             <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False" DataSourceID="MostNeededSqlDataSource">
                 <Columns>
@@ -44,7 +49,7 @@
                 </Columns>
             </asp:GridView>
             <asp:SqlDataSource ID="IssuesPerAppSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report GROUP BY report_id;">
+                ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report GROUP BY report_id;" EnableCaching="True" CacheDuration="300">
             </asp:SqlDataSource>
             <asp:Label ID="IssuesPerAppLabel" runat="server" Text="Issues per Application"></asp:Label>
             <br />

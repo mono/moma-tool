@@ -17,4 +17,33 @@ public partial class Submissions : System.Web.UI.Page
     {
 
     }
+    protected void SubmissionsSqlDataSource_Filtering(object sender, SqlDataSourceFilteringEventArgs e)
+    {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            string filter = string.Empty;
+
+            foreach (ListItem item in ImportanceFilterListBox.Items)
+            {
+                if (item.Selected)
+                {
+                    if (filter != string.Empty)
+                    {
+                        filter += " OR ";
+                    }
+                    filter += "importance='" + item.Value + "'";
+                }
+            }
+
+            // If nothing selected, the empty string will filter nothing
+            SubmissionsSqlDataSource.FilterExpression = filter;
+        }
+    }
+    protected void ImportanceFilterButton_Click(object sender, EventArgs e)
+    {
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            ReportsGridView.DataBind();
+        }
+    }
 }
