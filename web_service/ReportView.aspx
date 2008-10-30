@@ -72,6 +72,7 @@
                                 <asp:CommandField ShowEditButton="True" />
                             </Fields>
                         </asp:DetailsView>
+                        <asp:Label ID="NoSuchReportLabel" runat="server" Text="That report does not exist.  Please try again." Visible="False"></asp:Label>
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </div>

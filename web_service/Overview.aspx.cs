@@ -34,7 +34,10 @@ public partial class Overview : System.Web.UI.Page
         if (Page.User.Identity.IsAuthenticated)
         {
             ZedGraphWeb zg1 = (ZedGraphWeb)LoginView1.FindControl("IssuesPerAppGraph");
-            zg1.RenderGraph += new ZedGraphWebControlEventHandler(this.OnRenderGraph1);
+            if (zg1 != null)
+            {
+                zg1.RenderGraph += new ZedGraphWebControlEventHandler(this.OnRenderGraph1);
+            }
         }
     }
 

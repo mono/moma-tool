@@ -13,6 +13,7 @@ using System.Xml.Linq;
 
 using System.Net.Mail;
 using System.Text;
+using System.Data.Common;
 
 public partial class ReportView : System.Web.UI.Page
 {
@@ -32,7 +33,23 @@ public partial class ReportView : System.Web.UI.Page
                 /* Need to create this metadata entry */
                 int id = this.GetID();
                 MetadataSqlDataSource.InsertParameters["id"].DefaultValue = id.ToString();
-                MetadataSqlDataSource.Insert();
+
+                try
+                {
+                    /* Will throw if the requested report ID doesn't exist */
+                    MetadataSqlDataSource.Insert();
+                }
+                catch (DbException ex)
+                {
+                    SendCommentCheckBox.Visible = false;
+                    SendCommentCheckBox.Checked = false;
+                    CommentButton.Visible = false;
+                    NewComment.Visible = false;
+                    Comments.Visible = false;
+                    CommentsLabel.Visible = false;
+
+                    NoSuchReportLabel.Visible = true;
+                }
             }
 
             if (!Page.IsPostBack)
@@ -153,9 +170,10 @@ public partial class ReportView : System.Web.UI.Page
 
         if (Page.User.Identity.IsAuthenticated)
         {
+            /* Might be null if report not found in DB */
             Label email_content_label = (Label)dv.FindControl("EmailContent");
 
-            if (!email_content_label.Text.Contains("@"))
+            if (email_content_label == null || !email_content_label.Text.Contains("@"))
             {
                 /* Hide the email checkbox, as we can't email the submitter anyway... */
                 SendCommentCheckBox.Visible = false;
