@@ -108,21 +108,48 @@
                 <asp:UpdatePanel ID="IssuesUpdatePanel" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
                         <asp:SqlDataSource ID="IssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id;" EnableCaching="True" CacheDuration="300">
+                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id;"
+                            EnableCaching="True" CacheDuration="300">
                             <SelectParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID"
                                     Type="Int32" />
                             </SelectParameters>
                         </asp:SqlDataSource>
                         <asp:GridView ID="IssuesGridView" runat="server" AllowPaging="True" AllowSorting="True"
-                            AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource">
+                            AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource" OnRowDataBound="IssuesGridView_RowDataBound">
                             <Columns>
                                 <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
                                 <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
                                 <asp:BoundField DataField="method_class" HeaderText="Classname" SortExpression="method_class" />
                                 <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />
                             </Columns>
+                            <PagerTemplate>
+                                <asp:Label ID="PagerRowsLabel" runat="server" Text="Show rows:" />
+                                <asp:DropDownList ID="PagerPageSizeDropDownList" runat="server" AutoPostBack="true"
+                                    OnSelectedIndexChanged="PagerPageSizeDropDownList_SelectedIndexChanged">
+                                    <asp:ListItem Value="10"></asp:ListItem>
+                                    <asp:ListItem Value="20"></asp:ListItem>
+                                    <asp:ListItem Value="30"></asp:ListItem>
+                                </asp:DropDownList>
+                                Page
+                                <asp:TextBox ID="PagerGotoTextBox" runat="server" AutoPostBack="true" OnTextChanged="PagerGotoTextBox_TextChanged"
+                                    MaxLength="5" Columns="5"></asp:TextBox>
+                                of
+                                <asp:Label ID="PagerCountLabel" runat="server"></asp:Label>
+                                <asp:Button ID="PagerPrevButton" runat="server" CommandName="Page" CommandArgument="Prev"
+                                    Text="Prev" />
+                                <asp:Button ID="PagerNextButton" runat="server" CommandName="Page" CommandArgument="Next"
+                                    Text="Next" />
+                            </PagerTemplate>
+                            <EmptyDataTemplate>
+                                No rows to show
+                            </EmptyDataTemplate>
                         </asp:GridView>
+                        <asp:UpdateProgress ID="UpdateProgress1" runat="server">
+                            <ProgressTemplate>
+                                Thinking...
+                            </ProgressTemplate>
+                        </asp:UpdateProgress>
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </div>

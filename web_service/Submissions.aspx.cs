@@ -35,15 +35,78 @@ public partial class Submissions : System.Web.UI.Page
                 }
             }
 
+            if (AppTypeFilterTextBox.Text != string.Empty)
+            {
+                if (filter != string.Empty)
+                {
+                    filter += " AND ";
+                }
+
+                filter += "application_type='" + AppTypeFilterTextBox.Text + "'";
+            }
+
+            if (ProfileFilterDropDownList.SelectedItem != null &&
+                ProfileFilterDropDownList.SelectedItem.Value != "[All]")
+            {
+                if (filter != string.Empty)
+                {
+                    filter += " AND ";
+                }
+
+                filter += "display_name='" + ProfileFilterDropDownList.SelectedItem.Value + "'";
+            }
+
             // If nothing selected, the empty string will filter nothing
             SubmissionsSqlDataSource.FilterExpression = filter;
         }
     }
-    protected void ImportanceFilterButton_Click(object sender, EventArgs e)
+    protected void FilterButton_Click(object sender, EventArgs e)
     {
         if (Page.User.Identity.IsAuthenticated)
         {
             ReportsGridView.DataBind();
+        }
+    }
+    protected void ProfileFilterDropDownList_DataBound(object sender, EventArgs e)
+    {
+        /* Add the 'All' option to the top */
+        ProfileFilterDropDownList.Items.Insert(0, new ListItem("[All]", "[All]"));
+    }
+    protected void PagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DropDownList ddl = (DropDownList)sender;
+        ReportsGridView.PageSize = int.Parse(ddl.SelectedValue);
+    }
+    protected void PagerGotoTextBox_TextChanged(object sender, EventArgs e)
+    {
+        TextBox tb = (TextBox)sender;
+
+        int pagenum;
+        if (int.TryParse(tb.Text.Trim(), out pagenum) &&
+            pagenum > 0 &&
+            pagenum <= ReportsGridView.PageCount)
+        {
+            ReportsGridView.PageIndex = pagenum - 1;
+        }
+        else
+        {
+            ReportsGridView.PageIndex = 0;
+        }
+    }
+    protected void ReportsGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        GridView gv = (GridView)sender;
+
+        if (e.Row.RowType == DataControlRowType.Pager)
+        {
+            Label pager_count_label = (Label)e.Row.FindControl("PagerCountLabel");
+            pager_count_label.Text = gv.PageCount.ToString();
+
+            TextBox pager_goto_textbox = (TextBox)e.Row.FindControl("PagerGotoTextBox");
+            pager_goto_textbox.Text = (gv.PageIndex + 1).ToString();
+
+            DropDownList pager_page_size_ddl = (DropDownList)e.Row.FindControl("PagerPageSizeDropDownList");
+            pager_page_size_ddl.SelectedValue = gv.PageSize.ToString();
         }
     }
 }
