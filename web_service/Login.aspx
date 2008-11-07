@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" Title="MoMA Studio - Login" %>
 
+<asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
+    Login
+</asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="Server">
     <asp:LoginView ID="LoginView1" runat="server">
         <AnonymousTemplate>

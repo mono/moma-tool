@@ -5,47 +5,74 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>MoMA Studio</title>
-    <asp:ContentPlaceHolder id="head" runat="server">
-        <link href="MoMA.css" rel="stylesheet" type="text/css" />
-    </asp:ContentPlaceHolder>
+    <link href="http://mono-project.com/skins/common/commonPrint.css" rel="Stylesheet"
+        type="text/css" media="print" />
+    <link href="http://mono-project.com/skins/Mono2/screen.css" rel="Stylesheet" type="text/css"
+        media="screen" />
+    <link href="MoMA.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        function set_active_menu ()
+        {
+            var url = window.document.URL.toString();
+            if (url.indexOf("?") > 0) {
+                url = url.split("?")[0];
+            }
+        
+            var page_start = url.lastIndexOf("/");
+            var page = url.substring (page_start + 1, url.length - 5); /* Grab the page, minus .aspx */
+        
+            var menu_elem = document.getElementById("menu-" + page.toLowerCase());
+            if (menu_elem) {
+                menu_elem.className += " current_page_item";
+            }
+        }
+    </script>
 </head>
-<body>
-    <form id="form1" runat="server">
-    <div>
-        <asp:ScriptManager ID="ScriptManager1" runat="server" />
-        
-        <div class="header">
-            <div class="logo">
-                <asp:Image ID="Image1" runat="server" ImageUrl="~/mono_logo_small.gif" />
-                <asp:Literal ID="Literal1" runat="server" Text="MoMA Studio"></asp:Literal>
+<body onload="set_active_menu();">
+    <div id="page">
+        <form id="form1" runat="server">
+        <div>
+            <asp:ScriptManager ID="ScriptManager1" runat="server" />
+            <div id="header">
+                <h1>MoMA Studio</h1>
+                <div class="login">
+                    <asp:LoginName ID="LoginName1" runat="server" />
+                    <asp:LoginStatus ID="LoginStatus1" runat="server" />
+                </div>
+                <ul>
+                    <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
+                    <li id="menu-reportview"><a href="ReportView.aspx">Individual Report</a></li>
+                    <li id="menu-apireport"><a href="APIReport.aspx">API Report</a></li>
+                    <li id="menu-submissions"><a href="Submissions.aspx">Submissions Report</a></li>
+                </ul>
             </div>
-            <div class="login">
-                <asp:LoginName ID="LoginName1" runat="server" />
-                <asp:LoginStatus ID="LoginStatus1" runat="server" />
+            <div id="content-header">
+                <h2>
+                <asp:ContentPlaceHolder id="ContentHeaderPlaceholder" runat="server">
+                Page content blurb goes here
+                </asp:ContentPlaceHolder>
+                </h2>
+            </div>
+            <div id="content" class="wide">
+                <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
+                </asp:ContentPlaceHolder>
             </div>
         </div>
-        
-        <div class="menubar">
-            <asp:Menu ID="Menu1" runat="server" Orientation="Horizontal">
-                <StaticMenuItemStyle BorderStyle="Solid" BorderWidth="1" />
-                <Items>
-                    <asp:MenuItem NavigateUrl="~/Overview.aspx" Text="Overview" Value="Overview">
-                    </asp:MenuItem>
-                    <asp:MenuItem NavigateUrl="~/ReportView.aspx" Text="Individual Report" 
-                        Value="Individual Report"></asp:MenuItem>
-                    <asp:MenuItem Text="API Report" Value="API Report" NavigateUrl="~/APIReport.aspx"></asp:MenuItem>
-                    <asp:MenuItem Text="Submissions Report" Value="Submissions Report" NavigateUrl="~/Submissions.aspx">
-                    </asp:MenuItem>
-                </Items>
-            </asp:Menu>
+        </form>
+        <div class="printfooter">
         </div>
-        
-        <div class="content">
-            <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
-            </asp:ContentPlaceHolder>
+        <div id="footer">
+            <table>
+            <tr>
+            <td class="novell">
+            <a href="http://www.novell.com/linux"><img src="http://mono-project.com/skins/Mono2/images/novell-logo.png" alt="Novell" title="The Mono Project - Sponsored by Novell" /></a>
+            </td>
+            <td class="text">
+            <p>The Mono name, logo and icon are registered trademarks of <a href="http://www.novell.com/linux">Novell</a>.</p>
+            </td>
+            </tr>
+            </table>
         </div>
-        
     </div>
-    </form>
 </body>
 </html>

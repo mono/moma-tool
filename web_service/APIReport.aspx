@@ -1,6 +1,9 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="APIReport.aspx.cs" Inherits="APIReport" Title="MoMA Studio - API Report" %>
 
 
+<asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
+A list of all reported issues
+</asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="Server">
     <asp:LoginView ID="LoginView1" runat="server">
         <AnonymousTemplate>
@@ -30,7 +33,7 @@
                     <asp:TextBox ID="IssueClassFilterTextBox" runat="server"></asp:TextBox>
                     <asp:Button ID="IssueFilterButton" runat="server" Text="Update" OnClick="IssueFilterButton_Click" />
                     <asp:GridView ID="IssuesGridView" runat="server" AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource"
-                        AllowPaging="True" AllowSorting="True" PageSize="20" 
+                        AllowPaging="True" AllowSorting="True" PageSize="10" 
                         onrowdatabound="IssuesGridView_RowDataBound">
                         <Columns>
                             <asp:BoundField DataField="Apps" HeaderText="Apps" SortExpression="apps" />

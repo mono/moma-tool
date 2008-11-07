@@ -21,6 +21,7 @@ public partial class Overview : System.Web.UI.Page
     {
         //Npgsql.NpgsqlEventLog.Level = Npgsql.LogLevel.Debug;
         //Npgsql.NpgsqlEventLog.LogName = "c:\\cygwin\\tmp\\npgsql-debug-log";
+        
     }
 
     protected override void OnInit(EventArgs e)
@@ -78,6 +79,26 @@ public partial class Overview : System.Web.UI.Page
             }
 
             masterPane.AxisChange(g);
+        }
+    }
+    protected void MostNeededGridView_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        GridView gv = (GridView)sender;
+
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            string method = DataBinder.Eval(e.Row.DataItem, "method_name").ToString();
+            int brace_start, brace_end;
+
+            brace_start = method.IndexOf('(');
+            brace_end = method.IndexOf(')');
+
+            if (brace_start + 1 < brace_end)
+            {
+                /* Got some parameters */
+                e.Row.Cells[2].Text = method.Substring(0, brace_start + 1) + "...)";
+            }
+            e.Row.Cells[2].ToolTip = method;
         }
     }
 }

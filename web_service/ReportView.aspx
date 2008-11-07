@@ -1,5 +1,8 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="ReportView.aspx.cs" Inherits="ReportView" Title="MoMA Studio - View Report" %>
 
+<asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
+See report details
+</asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="Server">
     <asp:LoginView ID="LoginView1" runat="server">
         <AnonymousTemplate>
@@ -18,11 +21,6 @@
                             </SelectParameters>
                             <InsertParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID" />
-                                <asp:FormParameter Name="comment" FormField="NewComment" />
-                                <%-- commenter and comment_date set in CommentButton_Click () --%>
-                                <asp:Parameter Name="commenter" DefaultValue="" />
-                                <asp:Parameter Name="comment_date" DefaultValue="" />
-                                <asp:FormParameter Name="emailed" FormField="SendCommentCheckBox" Type="Boolean" />
                             </InsertParameters>
                         </asp:SqlDataSource>
                         <asp:SqlDataSource ID="ReportWithMetadataSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
@@ -40,6 +38,7 @@
                                 <asp:Parameter Name="application_type" Type="String" />
                             </UpdateParameters>
                         </asp:SqlDataSource>
+                        <asp:Label ID="ReportDetailsLabel" runat="server" Text="<h2>Report Details:</h2>"></asp:Label><br />
                         <asp:DetailsView ID="ReportDetailsView" runat="server" AutoGenerateRows="False" 
                             DataSourceID="ReportWithMetadataSqlDataSource" 
                             ondatabound="ReportDetailsView_DataBound">
@@ -94,8 +93,8 @@
                                 <asp:Parameter Name="comment_date" DefaultValue="" />
                                 <asp:FormParameter Name="emailed" FormField="SendCommentCheckBox" Type="Boolean" />
                             </InsertParameters>
-                            </asp:SqlDataSource>
-                            <asp:Label ID="CommentsLabel" runat="server" Text="Comments:"></asp:Label><br />
+                        </asp:SqlDataSource>
+                        <asp:Label ID="CommentsLabel" runat="server" Text="<h2>Comments:</h2>"></asp:Label><br />
                         <asp:TextBox ID="Comments" runat="server" ReadOnly="True" TextMode="MultiLine" Columns="40"
                             Rows="12"></asp:TextBox><br />
                         <asp:TextBox ID="NewComment" runat="server" Rows="6" TextMode="MultiLine" Columns="40"></asp:TextBox><br />
@@ -115,6 +114,7 @@
                                     Type="Int32" />
                             </SelectParameters>
                         </asp:SqlDataSource>
+                        <asp:Label ID="ReportIssuesLabel" runat="server" Text="<h2>Issues:</h2>"></asp:Label><br />
                         <asp:GridView ID="IssuesGridView" runat="server" AllowPaging="True" AllowSorting="True"
                             AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource" OnRowDataBound="IssuesGridView_RowDataBound">
                             <Columns>

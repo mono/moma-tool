@@ -2,27 +2,10 @@
 {
 }
 
-.header 
+#header .login
 {
-    background-color: #fae6ce;
-    position: relative;
-}
-
-.header .logo
-{
-    left: 2px;
-    float: left;
-}
-
-.header .login
-{
-    right: 2px;
     float: right;
-}
-
-.menubar
-{
-    clear: both;
+    color: #a1bfe2;
 }
 
 .content

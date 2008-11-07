@@ -1,13 +1,16 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="Overview.aspx.cs" Inherits="Overview" Title="MoMA Studio - Overview" %>
 <%@ Register TagPrefix="zgw" Namespace="ZedGraph.Web" Assembly="ZedGraph.Web" %>
 
+<asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
+Overview
+</asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="server">
     <asp:LoginView ID="LoginView1" runat="server">
         <AnonymousTemplate>
             This view is only available to logged-in users.
         </AnonymousTemplate>
         <LoggedInTemplate>
-            <asp:Label ID="Latest20Label" runat="server" Text="Latest 20 Reports:"></asp:Label>
+            <asp:Label ID="Latest20Label" runat="server" Text="<h2>Latest 20 Reports:</h2>"></asp:Label>
             <br />
             <asp:SqlDataSource ID="Latest20SqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                 ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>"
@@ -34,12 +37,15 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-            <asp:Label ID="MostNeededLabel" runat="server" Text="Most needed API:"></asp:Label>
+            <br />
+            <asp:Label ID="MostNeededLabel" runat="server" Text="<h2>Most needed API:</h2>"></asp:Label>
             <br />
             <asp:SqlDataSource ID="MostNeededSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                 ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY Apps DESC LIMIT 20;" EnableCaching="True" CacheDuration="300">
             </asp:SqlDataSource>
-            <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False" DataSourceID="MostNeededSqlDataSource">
+            <asp:GridView ID="MostNeededGridView" runat="server" 
+                AutoGenerateColumns="False" DataSourceID="MostNeededSqlDataSource" 
+                onrowdatabound="MostNeededGridView_RowDataBound">
                 <Columns>
                     <asp:BoundField DataField="method_namespace" HeaderText="Namespace" />
                     <asp:BoundField DataField="method_class" HeaderText="Class" />
@@ -51,7 +57,8 @@
             <asp:SqlDataSource ID="IssuesPerAppSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                 ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report GROUP BY report_id;" EnableCaching="True" CacheDuration="300">
             </asp:SqlDataSource>
-            <asp:Label ID="IssuesPerAppLabel" runat="server" Text="Issues per Application"></asp:Label>
+            <br />
+            <asp:Label ID="IssuesPerAppLabel" runat="server" Text="<h2>Issues per Application:</h2>"></asp:Label>
             <br />
             <zgw:zedgraphweb ID="IssuesPerAppGraph" runat="server"></zgw:zedgraphweb>
         </LoggedInTemplate>

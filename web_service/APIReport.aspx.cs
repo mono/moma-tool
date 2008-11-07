@@ -102,5 +102,20 @@ public partial class APIReport : System.Web.UI.Page
             DropDownList pager_page_size_ddl = (DropDownList)e.Row.FindControl("PagerPageSizeDropDownList");
             pager_page_size_ddl.SelectedValue = gv.PageSize.ToString();
         }
+        else if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            string method = DataBinder.Eval(e.Row.DataItem, "method_name").ToString();
+            int brace_start, brace_end;
+
+            brace_start = method.IndexOf('(');
+            brace_end = method.IndexOf(')');
+
+            if (brace_start + 1 < brace_end)
+            {
+                /* Got some parameters */
+                e.Row.Cells[3].Text = method.Substring(0, brace_start + 1) + "...)";
+            }
+            e.Row.Cells[3].ToolTip = method;
+        }
     }
 }
