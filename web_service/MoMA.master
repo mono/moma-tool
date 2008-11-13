@@ -53,9 +53,11 @@
                 </asp:ContentPlaceHolder>
                 </h2>
             </div>
-            <div id="content" class="wide">
-                <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
-                </asp:ContentPlaceHolder>
+            <div id="wrapper">
+                <div id="content" class="wide">
+                    <asp:ContentPlaceHolder ID="BodyContentPlaceHolder" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
             </div>
         </div>
         </form>

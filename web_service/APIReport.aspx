@@ -2,7 +2,7 @@
 
 
 <asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
-A list of all reported issues
+    A list of all reported issues
 </asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="Server">
     <asp:LoginView ID="LoginView1" runat="server">
@@ -19,28 +19,33 @@ A list of all reported issues
                         CacheDuration="300" EnableCaching="True" FilterExpression="lookup_name = 'TODO'"
                         OnFiltering="IssuesSqlDataSource_Filtering">
                     </asp:SqlDataSource>
-                    <asp:Label ID="IssueTypeFilterLabel" runat="server" Text="Show only:"></asp:Label>
-                    <asp:ListBox ID="IssueTypeFilterListBox" runat="server"
-                        SelectionMode="Multiple" Rows="4">
-                        <asp:ListItem>MISS</asp:ListItem>
-                        <asp:ListItem>NIEX</asp:ListItem>
-                        <asp:ListItem>PINV</asp:ListItem>
-                        <asp:ListItem>TODO</asp:ListItem>
-                    </asp:ListBox>
-                    <asp:Label ID="IssueNamespaceFilterLabel" runat="server" Text="in namespace: "></asp:Label>
-                    <asp:TextBox ID="IssueNamespaceFilterTextBox" runat="server"></asp:TextBox>
-                    <asp:Label ID="IssueClassFilterLabel" runat="server" Text="with class: "></asp:Label>
-                    <asp:TextBox ID="IssueClassFilterTextBox" runat="server"></asp:TextBox>
-                    <asp:Button ID="IssueFilterButton" runat="server" Text="Update" OnClick="IssueFilterButton_Click" />
+                    <div id="sidebar">
+                        <h2>Filter</h2>
+                        <h3>Issue Type:</h3>
+                        <asp:CheckBoxList ID="IssueTypeFilterCheckBoxList" runat="server">
+                            <asp:ListItem>MISS</asp:ListItem>
+                            <asp:ListItem>NIEX</asp:ListItem>
+                            <asp:ListItem>PINV</asp:ListItem>
+                            <asp:ListItem>TODO</asp:ListItem>
+                        </asp:CheckBoxList>
+                        <h3>Namespace:</h3>
+                        <asp:TextBox ID="IssueNamespaceFilterTextBox" runat="server"></asp:TextBox>
+                        <h3>Class:</h3>
+                        <asp:TextBox ID="IssueClassFilterTextBox" runat="server"></asp:TextBox>
+                        <asp:Button ID="IssueFilterButton" runat="server" Text="Update" OnClick="IssueFilterButton_Click" />
+                    </div>
                     <asp:GridView ID="IssuesGridView" runat="server" AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource"
                         AllowPaging="True" AllowSorting="True" PageSize="10" 
                         onrowdatabound="IssuesGridView_RowDataBound">
+                        <AlternatingRowStyle CssClass="gv_col_alternating" />
+                        <HeaderStyle CssClass="gv_header" />
+                        <PagerStyle CssClass="gv_pager" />
                         <Columns>
                             <asp:BoundField DataField="Apps" HeaderText="Apps" SortExpression="apps" />
                             <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
                             <asp:BoundField DataField="method_class" HeaderText="Class" SortExpression="method_class" />
                             <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />
-                            <asp:BoundField DataField="display_name" HeaderText="Type" SortExpression="display_name" />
+                            <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
                         </Columns>
                         <PagerTemplate>
                             <asp:Label ID="PagerRowsLabel" runat="server" Text="Show rows:" />

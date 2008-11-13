@@ -28,3 +28,45 @@
 {
     clear: both;
 }
+
+.gv_header
+{
+    background-color: #e5e5e5;
+    height: 23px;
+}
+
+.gv_header th
+{
+    border: 1px solid #bbbbbb;
+    padding-left: 5px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.gv_header a
+{
+    color: Black;
+    display: block;  /* allow click anywhere in the header, not just the link text */
+}
+
+.gv_pager
+{
+    color: #444444;
+    background-color: #e5e5e5;
+    text-align: center;
+}
+
+.gv_col_alternating
+{
+    background-color: #f9f9f9;
+}
+
+.gv_col_sort
+{
+    background-color: #f0f0f0;
+}
+
+.gv_col_sort_alternating
+{
+    background-color: #e5e5e5;
+}

@@ -23,7 +23,7 @@ public partial class APIReport : System.Web.UI.Page
         {
             string filter = string.Empty;
 
-            foreach (ListItem item in IssueTypeFilterListBox.Items)
+            foreach (ListItem item in IssueTypeFilterCheckBoxList.Items)
             {
                 if (item.Selected)
                 {
@@ -91,6 +91,29 @@ public partial class APIReport : System.Web.UI.Page
     {
         GridView gv = (GridView)sender;
 
+        if (gv.SortExpression.Length > 0)
+        {
+            int cellIndex = -1;
+
+            foreach (DataControlField field in gv.Columns)
+            {
+                if (field.SortExpression == gv.SortExpression)
+                {
+                    cellIndex = gv.Columns.IndexOf(field);
+                    break;
+                }
+            }
+
+            if (cellIndex > -1)
+            {
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    // Set alternating row style
+                    e.Row.Cells[cellIndex].CssClass = e.Row.RowIndex % 2 == 0 ? "gv_col_sort_alternating" : "gv_col_sort";
+                }
+            }
+        }
+
         if (e.Row.RowType == DataControlRowType.Pager)
         {
             Label pager_count_label = (Label)e.Row.FindControl("PagerCountLabel");
@@ -116,6 +139,24 @@ public partial class APIReport : System.Web.UI.Page
                 e.Row.Cells[3].Text = method.Substring(0, brace_start + 1) + "...)";
             }
             e.Row.Cells[3].ToolTip = method;
+
+            if (e.Row.Cells[1].Text.Length > 25)
+            {
+                e.Row.Cells[1].ToolTip = e.Row.Cells[1].Text;
+                e.Row.Cells[1].Text = e.Row.Cells[1].Text.Substring(0, 22) + "...";
+            }
+
+            if (e.Row.Cells[2].Text.Length > 25)
+            {
+                e.Row.Cells[2].ToolTip = e.Row.Cells[2].Text;
+                e.Row.Cells[2].Text = e.Row.Cells[2].Text.Substring(0, 22) + "...";
+            }
+
+            if (e.Row.Cells[3].Text.Length > 25)
+            {
+                /* Already done ToolTip for this column */
+                e.Row.Cells[3].Text = e.Row.Cells[3].Text.Substring(0, 22) + "...";
+            }
         }
     }
 }

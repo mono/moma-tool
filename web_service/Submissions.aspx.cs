@@ -23,7 +23,7 @@ public partial class Submissions : System.Web.UI.Page
         {
             string filter = string.Empty;
 
-            foreach (ListItem item in ImportanceFilterListBox.Items)
+            foreach (ListItem item in ImportanceCheckBoxList.Items)
             {
                 if (item.Selected)
                 {
@@ -33,6 +33,16 @@ public partial class Submissions : System.Web.UI.Page
                     }
                     filter += "importance='" + item.Value + "'";
                 }
+            }
+
+            if (AppNameFilterTextBox.Text != string.Empty)
+            {
+                if (filter != string.Empty)
+                {
+                    filter += " AND ";
+                }
+
+                filter += "application_name='" + AppNameFilterTextBox.Text + "'";
             }
 
             if (AppTypeFilterTextBox.Text != string.Empty)
@@ -97,6 +107,29 @@ public partial class Submissions : System.Web.UI.Page
     {
         GridView gv = (GridView)sender;
 
+        if (gv.SortExpression.Length > 0)
+        {
+            int cellIndex = -1;
+
+            foreach (DataControlField field in gv.Columns)
+            {
+                if (field.SortExpression == gv.SortExpression)
+                {
+                    cellIndex = gv.Columns.IndexOf(field);
+                    break;
+                }
+            }
+
+            if (cellIndex > -1)
+            {
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    // Set alternating row style
+                    e.Row.Cells[cellIndex].CssClass = e.Row.RowIndex % 2 == 0 ? "gv_col_sort_alternating" : "gv_col_sort";
+                }
+            }
+        }
+
         if (e.Row.RowType == DataControlRowType.Pager)
         {
             Label pager_count_label = (Label)e.Row.FindControl("PagerCountLabel");
@@ -107,6 +140,19 @@ public partial class Submissions : System.Web.UI.Page
 
             DropDownList pager_page_size_ddl = (DropDownList)e.Row.FindControl("PagerPageSizeDropDownList");
             pager_page_size_ddl.SelectedValue = gv.PageSize.ToString();
+        }
+    }
+
+    public string FormatIssueCount(string count)
+    {
+        /* count should be either blank (representing zero) or hold an integer */
+        if (count == "")
+        {
+            return "0";
+        }
+        else
+        {
+            return count;
         }
     }
 }

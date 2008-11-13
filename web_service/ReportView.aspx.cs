@@ -30,29 +30,18 @@ public partial class ReportView : System.Web.UI.Page
 
             if (metadata_data.Count == 0)
             {
-                /* Need to create this metadata entry */
-                int id = this.GetID();
-                MetadataSqlDataSource.InsertParameters["id"].DefaultValue = id.ToString();
+                SendCommentCheckBox.Visible = false;
+                SendCommentCheckBox.Checked = false;
+                CommentButton.Visible = false;
+                NewComment.Visible = false;
+                Comments.Visible = false;
+                CommentsLabel.Visible = false;
+                ReportDetailsLabel.Visible = false;
+                IssuesGridView.Visible = false;
+                ReportIssuesLabel.Visible = false;
 
-                try
-                {
-                    /* Will throw if the requested report ID doesn't exist */
-                    MetadataSqlDataSource.Insert();
-                }
-                catch (DbException ex)
-                {
-                    SendCommentCheckBox.Visible = false;
-                    SendCommentCheckBox.Checked = false;
-                    CommentButton.Visible = false;
-                    NewComment.Visible = false;
-                    Comments.Visible = false;
-                    CommentsLabel.Visible = false;
-                    ReportDetailsLabel.Visible = false;
-                    IssuesGridView.Visible = false;
-                    ReportIssuesLabel.Visible = false;
+                NoSuchReportLabel.Visible = true;
 
-                    NoSuchReportLabel.Visible = true;
-                }
             }
 
             if (!Page.IsPostBack)
