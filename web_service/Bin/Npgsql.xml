@@ -592,34 +592,6 @@
             from PostgreSQL
             </summary>
         </member>
-        <member name="M:Npgsql.Web.NpgsqlMembershipProvider.GetUserNameById(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="Id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlMembershipProvider.GetUserId">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlMembershipProvider.GetCustomUser(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="username"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlMembershipProvider.GetUser(System.String,System.Boolean)">
-            <summary>
-            MembershipProvider.GetUser(string, bool)
-            </summary>
-            <param name="username"></param>
-            <param name="userIsOnline"></param>
-            <returns></returns>
-        </member>
         <member name="M:Npgsql.NpgsqlPromotableSinglePhaseNotification.Prepare">
             <summary>
             Used when a connection is closed
@@ -1812,6 +1784,16 @@
             Position (one based) within the query string where the error was encounterd.  PostgreSQL 7.4 and up.
             </summary>
         </member>
+        <member name="P:Npgsql.NpgsqlError.InternalPosition">
+            <summary>
+            Position (one based) within the query string where the error was encounterd.  This position refers to an internal command executed for example inside a PL/pgSQL function. PostgreSQL 7.4 and up.
+            </summary>
+        </member>
+        <member name="P:Npgsql.NpgsqlError.InternalQuery">
+            <summary>
+            Internal query string where the error was encounterd.  This position refers to an internal command executed for example inside a PL/pgSQL function. PostgreSQL 7.4 and up.
+            </summary>
+        </member>
         <member name="P:Npgsql.NpgsqlError.Where">
             <summary>
             Trace back information.  PostgreSQL 7.4 and up.
@@ -2739,6 +2721,16 @@
             Rolls back a transaction from a pending state.
             </summary>
         </member>
+        <member name="M:Npgsql.NpgsqlTransaction.Rollback(System.String)">
+            <summary>
+            Rolls back a transaction from a pending savepoint state.
+            </summary>
+        </member>
+        <member name="M:Npgsql.NpgsqlTransaction.Save(System.String)">
+            <summary>
+            Creates a transaction save point.
+            </summary>
+        </member>
         <member name="M:Npgsql.NpgsqlTransaction.Cancel">
             <summary>
             Cancel the transaction without telling the backend about it.  This is
@@ -3045,6 +3037,12 @@
             Constructor.
             </summary>
             <param name="Shared">Controls whether the connector can be shared.</param>
+        </member>
+        <member name="M:Npgsql.NpgsqlConnector.IsValid">
+            <summary>
+            This method checks if the connector is still ok.
+            We try to send a simple query text, select 1 as ConnectionTest;
+            </summary>
         </member>
         <member name="M:Npgsql.NpgsqlConnector.ReleaseResources">
             <summary>
@@ -3573,166 +3571,6 @@
         <member name="T:Npgsql.NpgsqlRow">
             <summary>
             This is the abstract base class for NpgsqlAsciiRow and NpgsqlBinaryRow.
-            </summary>
-        </member>
-        <member name="T:Npgsql.Web.NpgsqlProfileProvider">
-            <summary>
-            custom Profile provider class
-            </summary>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.Initialize(System.String,System.Collections.Specialized.NameValueCollection)">
-            <summary>
-            Initializes settings
-            </summary>
-            <param name="name"></param>
-            <param name="config"></param>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetPropertyValues(System.Configuration.SettingsContext,System.Configuration.SettingsPropertyCollection)">
-            <summary>
-            Gets property values
-            </summary>
-            <param name="context"></param>
-            <param name="collection"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.SetPropertyValues(System.Configuration.SettingsContext,System.Configuration.SettingsPropertyValueCollection)">
-            <summary>
-            Sets property values
-            </summary>
-            <param name="context"></param>
-            <param name="collection"></param>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.DeleteProfiles(System.String[])">
-            <summary>
-            Deletes Profiles
-            </summary>
-            <param name="usernames"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.DeleteInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption,System.DateTime)">
-            <summary>
-            Deletes inactive Profiles
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="userInactiveSinceDate"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetNumberOfInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption,System.DateTime)">
-            <summary>
-            Gets number of inactive Profiles
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="userInactiveSinceDate"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetAllProfiles(System.Web.Profile.ProfileAuthenticationOption,System.Int32,System.Int32,System.Int32@)">
-            <summary>
-            Gets all Profiles
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <param name="totalRecords"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetAllInactiveProfiles(System.Web.Profile.ProfileAuthenticationOption,System.DateTime,System.Int32,System.Int32,System.Int32@)">
-            <summary>
-            Gets all inactive Profiles
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="userInactiveSinceDate"></param>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <param name="totalRecords"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.FindProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption,System.String,System.Int32,System.Int32,System.Int32@)">
-            <summary>
-            Finds Profiles by user name
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="usernameToMatch"></param>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <param name="totalRecords"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.FindInactiveProfilesByUserName(System.Web.Profile.ProfileAuthenticationOption,System.String,System.DateTime,System.Int32,System.Int32,System.Int32@)">
-            <summary>
-            Finds inactive Profiles by user name
-            </summary>
-            <param name="authenticationOption"></param>
-            <param name="usernameToMatch"></param>
-            <param name="userInactiveSinceDate"></param>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <param name="totalRecords"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetProfileDataFromTable(System.Configuration.SettingsPropertyCollection,System.Configuration.SettingsPropertyValueCollection,System.String,Npgsql.NpgsqlConnection)">
-            <summary>
-            Gets Profile data from table
-            </summary>
-            <param name="properties"></param>
-            <param name="svc"></param>
-            <param name="username"></param>
-            <param name="conn"></param>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.UpdateLastActivityDate(Npgsql.NpgsqlConnection,System.Guid)">
-            <summary>
-            Updates last activity date
-            </summary>
-            <param name="conn"></param>
-            <param name="userId"></param>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.CreateInputParam(System.String,NpgsqlTypes.NpgsqlDbType,System.Object)">
-            <summary>
-            Creates input parameter
-            </summary>
-            <param name="paramName"></param>
-            <param name="dbType"></param>
-            <param name="objValue"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GenerateQuery(System.Boolean,System.Web.Profile.ProfileAuthenticationOption)">
-            <summary>
-            Generates Query
-            </summary>
-            <param name="delete"></param>
-            <param name="authenticationOption"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GenerateTempInsertQueryForGetProfiles(System.Web.Profile.ProfileAuthenticationOption)">
-            <summary>
-            Generates temporary insert Query for Get Profiles
-            </summary>
-            <param name="authenticationOption"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Npgsql.Web.NpgsqlProfileProvider.GetProfilesForQuery(Npgsql.NpgsqlParameter[],System.Int32,System.Int32,System.Text.StringBuilder,System.Int32@)">
-            <summary>
-            Gets Profiles for Query
-            </summary>
-            <param name="insertArgs"></param>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <param name="insertQuery"></param>
-            <param name="totalRecords"></param>
-            <returns></returns>
-        </member>
-        <member name="P:Npgsql.Web.NpgsqlProfileProvider.AppId">
-            <summary>
-            gets application name
-            </summary>
-        </member>
-        <member name="P:Npgsql.Web.NpgsqlProfileProvider.ApplicationName">
-            <summary>
-            Gets or sets application name
-            </summary>
-        </member>
-        <member name="T:Npgsql.Web.NpgsqlProfileProvider.ProfileColumnData">
-            <summary>
-            Container struct for use in aggregating columns for queries
             </summary>
         </member>
         <member name="T:Npgsql.MD5CryptoServiceProvider">
