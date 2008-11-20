@@ -41,7 +41,15 @@ public partial class ReportView : System.Web.UI.Page
                 ReportIssuesLabel.Visible = false;
 
                 NoSuchReportLabel.Visible = true;
+            }
 
+            MembershipUser user = Membership.GetUser(Page.User.Identity.Name);
+            Label email_content_label = (Label)LoginView1.FindControl("EmailContent");
+
+            if (!Page.User.IsInRole("Novell") &&
+                user.Email != email_content_label.Text)
+            {
+                /* Logged-in user, but not the owner of the report */
             }
 
             if (!Page.IsPostBack)

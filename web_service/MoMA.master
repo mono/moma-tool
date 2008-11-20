@@ -39,12 +39,21 @@
                     <asp:LoginName ID="LoginName1" runat="server" />
                     <asp:LoginStatus ID="LoginStatus1" runat="server" />
                 </div>
-                <ul>
-                    <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
-                    <li id="menu-reportview"><a href="ReportView.aspx">Individual Report</a></li>
-                    <li id="menu-apireport"><a href="APIReport.aspx">API Report</a></li>
-                    <li id="menu-submissions"><a href="Submissions.aspx">Submissions Report</a></li>
-                </ul>
+                <asp:LoginView ID="LoginView1" runat="server">
+                    <AnonymousTemplate>
+                        <ul>
+                            <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
+                        </ul>
+                    </AnonymousTemplate>
+                    <LoggedInTemplate>
+                        <ul>
+                            <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
+                            <li id="menu-reportview"><a href="ReportView.aspx">Individual Report</a></li>
+                            <li id="menu-apireport"><a href="APIReport.aspx">API Report</a></li>
+                            <li id="menu-submissions"><a href="Submissions.aspx">Submissions Report</a></li>
+                        </ul>
+                    </LoggedInTemplate>
+                </asp:LoginView>
             </div>
             <div id="content-header">
                 <h2>

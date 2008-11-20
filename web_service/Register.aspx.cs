@@ -17,4 +17,12 @@ public partial class Register : System.Web.UI.Page
     {
 
     }
+    protected void CreateUserWizard1_SendingMail(object sender, MailMessageEventArgs e)
+    {
+        CreateUserWizard cuw = (CreateUserWizard)LoginView1.FindControl("CreateUserWizard1");
+        MembershipUser user = Membership.GetUser(cuw.UserName);
+        string verify_url = Request.Url.GetLeftPart(UriPartial.Authority) + Page.ResolveUrl("~/Verify.aspx?ID=" + user.ProviderUserKey.ToString());
+
+        e.Message.Body = e.Message.Body.Replace("<%VerifyUrl%>", verify_url);
+    }
 }

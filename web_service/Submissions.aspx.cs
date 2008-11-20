@@ -21,86 +21,158 @@ public partial class Submissions : System.Web.UI.Page
     {
         if (Page.User.Identity.IsAuthenticated)
         {
-            string filter = string.Empty;
-
-            foreach (ListItem item in ImportanceCheckBoxList.Items)
+            if (Page.User.IsInRole("Novell"))
             {
-                if (item.Selected)
+                string filter = string.Empty;
+
+                foreach (ListItem item in Novell_ImportanceCheckBoxList.Items)
+                {
+                    if (item.Selected)
+                    {
+                        if (filter != string.Empty)
+                        {
+                            filter += " OR ";
+                        }
+                        filter += "importance='" + item.Value + "'";
+                    }
+                }
+
+                if (Novell_AppNameFilterTextBox.Text != string.Empty)
                 {
                     if (filter != string.Empty)
                     {
-                        filter += " OR ";
+                        filter += " AND ";
                     }
-                    filter += "importance='" + item.Value + "'";
-                }
-            }
 
-            if (AppNameFilterTextBox.Text != string.Empty)
-            {
-                if (filter != string.Empty)
+                    filter += "application_name='" + Novell_AppNameFilterTextBox.Text + "'";
+                }
+
+                if (Novell_AppTypeFilterTextBox.Text != string.Empty)
                 {
-                    filter += " AND ";
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
+                    }
+
+                    filter += "application_type='" + Novell_AppTypeFilterTextBox.Text + "'";
                 }
 
-                filter += "application_name='" + AppNameFilterTextBox.Text + "'";
-            }
-
-            if (AppTypeFilterTextBox.Text != string.Empty)
-            {
-                if (filter != string.Empty)
+                if (Novell_ProfileFilterDropDownList.SelectedItem != null &&
+                    Novell_ProfileFilterDropDownList.SelectedItem.Value != "[All]")
                 {
-                    filter += " AND ";
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
+                    }
+
+                    filter += "display_name='" + Novell_ProfileFilterDropDownList.SelectedItem.Value + "'";
                 }
 
-                filter += "application_type='" + AppTypeFilterTextBox.Text + "'";
+                // If nothing selected, the empty string will filter nothing
+                SubmissionsSqlDataSource.FilterExpression = filter;
             }
-
-            if (ProfileFilterDropDownList.SelectedItem != null &&
-                ProfileFilterDropDownList.SelectedItem.Value != "[All]")
+            else
             {
-                if (filter != string.Empty)
+                string filter = string.Empty;
+
+                if (LoggedIn_AppTypeFilterTextBox.Text != string.Empty)
                 {
-                    filter += " AND ";
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
+                    }
+
+                    filter += "application_type='" + LoggedIn_AppTypeFilterTextBox.Text + "'";
                 }
 
-                filter += "display_name='" + ProfileFilterDropDownList.SelectedItem.Value + "'";
-            }
+                if (LoggedIn_ProfileFilterDropDownList.SelectedItem != null &&
+                    LoggedIn_ProfileFilterDropDownList.SelectedItem.Value != "[All]")
+                {
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
+                    }
 
-            // If nothing selected, the empty string will filter nothing
-            SubmissionsSqlDataSource.FilterExpression = filter;
+                    filter += "display_name='" + LoggedIn_ProfileFilterDropDownList.SelectedItem.Value + "'";
+                }
+
+                // If nothing selected, the empty string will filter nothing
+                SubmissionsSqlDataSource.FilterExpression = filter;
+            }
         }
     }
     protected void FilterButton_Click(object sender, EventArgs e)
     {
         if (Page.User.Identity.IsAuthenticated)
         {
-            ReportsGridView.DataBind();
+            if (Page.User.IsInRole("Novell"))
+            {
+                Novell_ReportsGridView.DataBind();
+            }
+            else
+            {
+                LoggedIn_ReportsGridView.DataBind();
+            }
         }
     }
     protected void ProfileFilterDropDownList_DataBound(object sender, EventArgs e)
     {
         /* Add the 'All' option to the top */
-        ProfileFilterDropDownList.Items.Insert(0, new ListItem("[All]", "[All]"));
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            if (Page.User.IsInRole("Novell"))
+            {
+                Novell_ProfileFilterDropDownList.Items.Insert(0, new ListItem("[All]", "[All]"));
+            }
+            else
+            {
+                LoggedIn_ProfileFilterDropDownList.Items.Insert(0, new ListItem("[All]", "[All]"));
+            }
+        }
     }
     protected void PagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DropDownList ddl = (DropDownList)sender;
-        ReportsGridView.PageSize = int.Parse(ddl.SelectedValue);
+
+        if (Page.User.Identity.IsAuthenticated)
+        {
+            if (Page.User.IsInRole("Novell"))
+            {
+                Novell_ReportsGridView.PageSize = int.Parse(ddl.SelectedValue);
+            }
+            else
+            {
+                LoggedIn_ReportsGridView.PageSize = int.Parse(ddl.SelectedValue);
+            }
+        }
     }
     protected void PagerGotoTextBox_TextChanged(object sender, EventArgs e)
     {
         TextBox tb = (TextBox)sender;
+        GridView gv;
 
-        int pagenum;
-        if (int.TryParse(tb.Text.Trim(), out pagenum) &&
-            pagenum > 0 &&
-            pagenum <= ReportsGridView.PageCount)
+        if (Page.User.Identity.IsAuthenticated)
         {
-            ReportsGridView.PageIndex = pagenum - 1;
-        }
-        else
-        {
-            ReportsGridView.PageIndex = 0;
+            if (Page.User.IsInRole("Novell"))
+            {
+                gv = Novell_ReportsGridView;
+            }
+            else
+            {
+                gv = LoggedIn_ReportsGridView;
+            }
+
+            int pagenum;
+            if (int.TryParse(tb.Text.Trim(), out pagenum) &&
+                pagenum > 0 &&
+                pagenum <= gv.PageCount)
+            {
+                gv.PageIndex = pagenum - 1;
+            }
+            else
+            {
+                gv.PageIndex = 0;
+            }
         }
     }
     protected void ReportsGridView_RowDataBound(object sender, GridViewRowEventArgs e)

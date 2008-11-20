@@ -17,4 +17,35 @@ public partial class Login : System.Web.UI.Page
     {
 
     }
+
+    protected void Login1_LoginError(object sender, EventArgs e)
+    {
+        System.Web.UI.WebControls.Login login_ctrl = (System.Web.UI.WebControls.Login)LoginView1.FindControl("Login1");
+        MembershipUser user = Membership.GetUser(login_ctrl.UserName);
+
+        Label login_error_details = (Label)LoginView1.FindControl("LoginErrorDetails");
+        if (user != null)
+        {
+            if (!user.IsApproved)
+            {
+                login_error_details.Text = "Your account has not yet been activated.";
+            }
+            else if (user.IsLockedOut)
+            {
+                login_error_details.Text = "Your account has been locked due to excessive incorrect login attempts.";
+            }
+            else
+            {
+                /* Login control handles other cases */
+                login_error_details.Text = "";
+            }
+        }
+    }
+    protected void Login1_LoggedIn(object sender, EventArgs e)
+    {
+        /* Override the ReturnURL.  When I figure out how to disable it
+         * for specific pages like Verify, it can be restored for the others.
+         */
+        Response.Redirect("~/Overview.aspx");
+    }
 }
