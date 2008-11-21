@@ -43,7 +43,7 @@ See report details
                                 <asp:BoundField DataField="application_name" HeaderText="Application" />
                                 <asp:TemplateField HeaderText="Importance">
                                     <EditItemTemplate>
-                                        <asp:DropDownList ID="ImportanceDropDownList" runat="server" SelectedValue="<%# Bind('importance') %>">
+                                        <asp:DropDownList ID="ImportanceDropDownList" runat="server" SelectedValue='<%# Bind("importance") %>'>
                                             <asp:ListItem>Important</asp:ListItem>
                                             <asp:ListItem>Useful</asp:ListItem>
                                             <asp:ListItem>Not useful</asp:ListItem>
