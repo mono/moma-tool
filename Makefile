@@ -16,8 +16,11 @@ DBINS=dbinsert.exe
 DBISS_SRCS=dbissue.cs
 DBISS_ASSES=-r:Npgsql -r:System.Data -r:../moma/MoMA.Analyzer/bin/MoMA.Analyzer.dll -r:ICSharpCode.SharpZipLib
 DBISS=dbissue.exe
+DBTOT_SRCS=dbtotals.cs
+DBTOT_ASSES=-r:Npgsql -r:System.Data
+DBTOT=dbtotals.exe
 
-all: $(DBINS) $(DBISS)
+all: $(DBINS) $(DBISS) $(DBTOT)
 
 $(ASS): $(ASS_SRCS)
 	gmcs -out:$(ASS) -target:library $(ASS_SRCS) $(ASS_ASSES)
@@ -30,3 +33,6 @@ $(DBINS): $(DBINS_SRCS)
 
 $(DBISS): $(DBISS_SRCS)
 	gmcs -out:$(DBISS) $(DBISS_SRCS) $(DBISS_ASSES)
+
+$(DBTOT): $(DBTOT_SRCS)
+	gmcs -out:$(DBTOT) $(DBTOT_SRCS) $(DBTOT_ASSES)
