@@ -32,7 +32,7 @@
     <div id="page">
         <form id="form1" runat="server">
         <div>
-            <asp:ScriptManager ID="ScriptManager1" runat="server" />
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="True" EnableScriptLocalization="True" />
             <div id="header">
                 <h1>MoMA Studio</h1>
                 <div class="login">

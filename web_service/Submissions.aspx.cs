@@ -25,15 +25,53 @@ public partial class Submissions : System.Web.UI.Page
             {
                 string filter = string.Empty;
 
+                string datefrom_text = Novell_DateFromTextBox.Text;
+                string dateto_text = Novell_DateToTextBox.Text;
+
+                if (datefrom_text != string.Empty &&
+                    dateto_text != string.Empty)
+                {
+                    try
+                    {
+                        DateTime datefrom = DateTime.Parse(datefrom_text);
+                        DateTime dateto = DateTime.Parse(dateto_text);
+
+                        /* Make dateto include the whole of the dateto day */
+                        dateto = dateto.AddHours(23);
+                        dateto = dateto.AddMinutes(59);
+                        dateto = dateto.AddSeconds(59);
+
+                        if (filter != string.Empty)
+                        {
+                            filter += " AND ";
+                        }
+
+                        filter += "report_date >= '" + datefrom.ToString("o") + "' AND report_date <= '" + dateto.ToString("o") + "'";
+                    }
+                    catch (FormatException) { }
+                }
+
                 foreach (ListItem item in Novell_ImportanceCheckBoxList.Items)
                 {
+                    string imp_filter = string.Empty;
+
                     if (item.Selected)
+                    {
+                        if (imp_filter != string.Empty)
+                        {
+                            imp_filter += " OR ";
+                        }
+                        imp_filter += "importance='" + item.Value + "'";
+                    }
+
+                    if (imp_filter != string.Empty)
                     {
                         if (filter != string.Empty)
                         {
-                            filter += " OR ";
+                            filter += " AND ";
                         }
-                        filter += "importance='" + item.Value + "'";
+
+                        filter += "(" + imp_filter + ")";
                     }
                 }
 
@@ -47,14 +85,27 @@ public partial class Submissions : System.Web.UI.Page
                     filter += "application_name='" + Novell_AppNameFilterTextBox.Text + "'";
                 }
 
-                if (Novell_AppTypeFilterTextBox.Text != string.Empty)
+                foreach (ListItem item in Novell_AppTypeCheckBoxList.Items)
                 {
-                    if (filter != string.Empty)
-                    {
-                        filter += " AND ";
-                    }
+                    string type_filter = string.Empty;
 
-                    filter += "application_type='" + Novell_AppTypeFilterTextBox.Text + "'";
+                    if (item.Selected)
+                    {
+                        if (type_filter != string.Empty)
+                        {
+                            type_filter += " OR ";
+                        }
+                        type_filter += "application_type='" + item.Value + "'";
+                    }
+                    if (type_filter != string.Empty)
+                    {
+                        if (filter != string.Empty)
+                        {
+                            filter += " AND ";
+                        }
+
+                        filter += "(" + type_filter + ")";
+                    }
                 }
 
                 if (Novell_ProfileFilterDropDownList.SelectedItem != null &&
@@ -75,14 +126,53 @@ public partial class Submissions : System.Web.UI.Page
             {
                 string filter = string.Empty;
 
-                if (LoggedIn_AppTypeFilterTextBox.Text != string.Empty)
-                {
-                    if (filter != string.Empty)
-                    {
-                        filter += " AND ";
-                    }
+                string datefrom_text = LoggedIn_DateFromTextBox.Text;
+                string dateto_text = LoggedIn_DateToTextBox.Text;
 
-                    filter += "application_type='" + LoggedIn_AppTypeFilterTextBox.Text + "'";
+                if (datefrom_text != string.Empty &&
+                    dateto_text != string.Empty)
+                {
+                    try
+                    {
+                        DateTime datefrom = DateTime.Parse(datefrom_text);
+                        DateTime dateto = DateTime.Parse(dateto_text);
+
+                        /* Make dateto include the whole of the dateto day */
+                        dateto = dateto.AddHours(23);
+                        dateto = dateto.AddMinutes(59);
+                        dateto = dateto.AddSeconds(59);
+
+                        if (filter != string.Empty)
+                        {
+                            filter += " AND ";
+                        }
+
+                        filter += "report_date >= '" + datefrom.ToString("o") + "' AND report_date <= '" + dateto.ToString("o") + "'";
+                    }
+                    catch (FormatException) { }
+                }
+
+                foreach (ListItem item in LoggedIn_AppTypeCheckBoxList.Items)
+                {
+                    string type_filter = string.Empty;
+
+                    if (item.Selected)
+                    {
+                        if (type_filter != string.Empty)
+                        {
+                            type_filter += " OR ";
+                        }
+                        type_filter += "application_type='" + item.Value + "'";
+                    }
+                    if (type_filter != string.Empty)
+                    {
+                        if (filter != string.Empty)
+                        {
+                            filter += " AND ";
+                        }
+
+                        filter += "(" + type_filter + ")";
+                    }
                 }
 
                 if (LoggedIn_ProfileFilterDropDownList.SelectedItem != null &&

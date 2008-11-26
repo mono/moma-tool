@@ -1,12 +1,14 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="Submissions.aspx.cs" Inherits="Submissions" Title="MoMA Studio - View Submissions" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
 <asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
     A list of all reports
 </asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" Runat="Server">
     <%-- Need something in the filter here so it will actually filter at all --%>
     <asp:SqlDataSource ID="SubmissionsSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT rep.id, rep.report_date, meta.importance, meta.application_name, meta.application_type, rep.reporter_name, rep.reporter_organization, def.display_name, miss.miss, niex.niex, pinv.pinv, todo.todo, total.total FROM moma_definition def, report rep LEFT JOIN report_metadata meta ON rep.id = meta.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS miss FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' AND issue_report.issue_id = issue.id GROUP BY report_id) AS miss ON rep.id = miss.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS niex FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' AND issue_report.issue_id = issue.id GROUP BY report_id) AS niex ON rep.id = niex.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS pinv FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'PINV' AND issue_report.issue_id = issue.id GROUP BY report_id) AS pinv ON rep.id = pinv.report_id LEFT JOIN (SELECT issue_report.report_id, COUNT(issue_report.report_id) AS todo FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' AND issue_report.issue_id = issue.id GROUP BY report_id) AS todo ON rep.id = todo.report_id LEFT JOIN (SELECT report_id, COUNT(report_id) AS total FROM issue_report GROUP BY report_id) AS total ON rep.id = total.report_id WHERE rep.moma_definition_id = def.id ORDER BY rep.report_date DESC;"
+        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT rep.id, rep.report_date, meta.importance, meta.application_name, rep.application_type, rep.reporter_name, rep.reporter_organization, def.display_name, rep.miss, rep.niex, rep.pinv, rep.todo, rep.total FROM moma_definition def, report rep, report_metadata meta WHERE rep.moma_definition_id = def.id AND rep.id = meta.report_id ORDER BY rep.report_date DESC;"
         EnableCaching="True" CacheDuration="300" FilterExpression="importance = 'Important'"
         OnFiltering="SubmissionsSqlDataSource_Filtering"></asp:SqlDataSource>
     <asp:SqlDataSource ID="ProfileSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
@@ -29,6 +31,14 @@
                             --%>
                             <div id="sidebar">
                                 <h2>Filter</h2>
+                                <h3>Date From:</h3>
+                                <asp:TextBox ID="Novell_DateFromTextBox" runat="server"></asp:TextBox>
+                                <cc1:CalendarExtender ID="Novell_DateFromCalendarExtender" TargetControlID="Novell_DateFromTextBox" runat="server">
+                                </cc1:CalendarExtender>
+                                <h3>Date To:</h3>
+                                <asp:TextBox ID="Novell_DateToTextBox" runat="server"></asp:TextBox>
+                                <cc1:CalendarExtender ID="Novell_DateToCalendarExtender" TargetControlID="Novell_DateToTextBox" runat="server">
+                                </cc1:CalendarExtender>
                                 <h3>Importance:</h3>
                                 <asp:CheckBoxList ID="Novell_ImportanceCheckBoxList" runat="server">
                                     <asp:ListItem>Important</asp:ListItem>
@@ -38,7 +48,16 @@
                                 <h3>Application Name:</h3>
                                 <asp:TextBox ID="Novell_AppNameFilterTextBox" runat="server"></asp:TextBox>
                                 <h3>Application Type:</h3>
-                                <asp:TextBox ID="Novell_AppTypeFilterTextBox" runat="server"></asp:TextBox>
+                                <%-- abbreviate the items so they fit cleanly in the sidebar --%>
+                                <asp:CheckBoxList ID="Novell_AppTypeCheckBoxList" runat="server">
+                                    <asp:ListItem>Corporate Website</asp:ListItem>
+                                    <asp:ListItem>Public Website</asp:ListItem>
+                                    <asp:ListItem Value="Corporate Desktop Application">Corporate Desktop App</asp:ListItem>
+                                    <asp:ListItem Value="Desktop Application for Resale">Desktop App for Resale</asp:ListItem>
+                                    <asp:ListItem Value="Web Application for Resale">Web App for Resale</asp:ListItem>
+                                    <asp:ListItem>Open Source Project</asp:ListItem>
+                                    <asp:ListItem>Other</asp:ListItem>
+                                </asp:CheckBoxList>
                                 <h3>Profile:</h3>
                                 <asp:DropDownList ID="Novell_ProfileFilterDropDownList" runat="server" DataSourceID="ProfileSqlDataSource"
                                     DataTextField="display_name" DataValueField="display_name" OnDataBound="ProfileFilterDropDownList_DataBound">
@@ -46,7 +65,7 @@
                                 <asp:Button ID="Novell_FilterButton" runat="server" Text="Update" OnClick="FilterButton_Click" />
                             </div>
                             <asp:GridView ID="Novell_ReportsGridView" runat="server" DataSourceID="SubmissionsSqlDataSource"
-                                AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound">
+                                AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound" PageSize="30">
                                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                                 <HeaderStyle CssClass="gv_header" />
                                 <PagerStyle CssClass="gv_pager" />
@@ -68,7 +87,7 @@
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="application_name" HeaderText="App Name" SortExpression="application_name" />
                                     <asp:BoundField DataField="application_type" HeaderText="App Type" SortExpression="application_type" />
-                                    <asp:BoundField DataField="reporter_organization" HeaderText="Organization" SortExpression="reporter_organization" />
+                                    <asp:BoundField DataField="reporter_organization" HeaderText="Org" SortExpression="reporter_organization" />
                                     <asp:BoundField DataField="display_name" HeaderText="Profile" SortExpression="display_name" />
                                     <asp:TemplateField HeaderText="MISS" SortExpression="miss">
                                         <ItemTemplate>
@@ -95,14 +114,15 @@
                                             <asp:Label ID="Label6" runat="server" Text='<%# FormatIssueCount (Eval("total").ToString()) %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                </Columns>
+                               </Columns>
                                 <PagerTemplate>
                                     <asp:Label ID="PagerRowsLabel" runat="server" Text="Show rows:" />
                                     <asp:DropDownList ID="PagerPageSizeDropDownList" runat="server" AutoPostBack="true"
                                         OnSelectedIndexChanged="PagerPageSizeDropDownList_SelectedIndexChanged">
-                                        <asp:ListItem Value="10"></asp:ListItem>
                                         <asp:ListItem Value="20"></asp:ListItem>
                                         <asp:ListItem Value="30"></asp:ListItem>
+                                        <asp:ListItem Value="50"></asp:ListItem>
+                                        <asp:ListItem Value="100"></asp:ListItem>
                                     </asp:DropDownList>
                                     Page
                                     <asp:TextBox ID="PagerGotoTextBox" runat="server" AutoPostBack="true" OnTextChanged="PagerGotoTextBox_TextChanged"
@@ -139,8 +159,25 @@
                     --%>
                     <div id="sidebar">
                         <h2>Filter</h2>
+                        <h3>Date From:</h3>
+                        <asp:TextBox ID="LoggedIn_DateFromTextBox" runat="server"></asp:TextBox>
+                        <cc1:CalendarExtender ID="LoggedIn_DateFromCalendarExtender" TargetControlID="LoggedIn_DateFromTextBox" runat="server">
+                        </cc1:CalendarExtender>
+                        <h3>Date To:</h3>
+                        <asp:TextBox ID="LoggedIn_DateToTextBox" runat="server"></asp:TextBox>
+                        <cc1:CalendarExtender ID="LoggedIn_DateToCalendarExtender" TargetControlID="LoggedIn_DateToTextBox" runat="server">
+                        </cc1:CalendarExtender>
                         <h3>Application Type:</h3>
-                        <asp:TextBox ID="LoggedIn_AppTypeFilterTextBox" runat="server"></asp:TextBox>
+                        <%-- abbreviate the items so they fit cleanly in the sidebar --%>
+                        <asp:CheckBoxList ID="LoggedIn_AppTypeCheckBoxList" runat="server">
+                            <asp:ListItem>Corporate Website</asp:ListItem>
+                            <asp:ListItem>Public Website</asp:ListItem>
+                            <asp:ListItem Value="Corporate Desktop Application">Corporate Desktop App</asp:ListItem>
+                            <asp:ListItem Value="Desktop Application for Resale">Desktop App for Resale</asp:ListItem>
+                            <asp:ListItem Value="Web Application for Resale">Web App for Resale</asp:ListItem>
+                            <asp:ListItem>Open Source Project</asp:ListItem>
+                            <asp:ListItem>Other</asp:ListItem>
+                        </asp:CheckBoxList>
                         <h3>Profile:</h3>
                         <asp:DropDownList ID="LoggedIn_ProfileFilterDropDownList" runat="server" DataSourceID="ProfileSqlDataSource"
                             DataTextField="display_name" DataValueField="display_name" OnDataBound="ProfileFilterDropDownList_DataBound">
@@ -149,7 +186,7 @@
                     </div>
                     <asp:GridView ID="LoggedIn_ReportsGridView" runat="server" DataSourceID="SubmissionsSqlDataSource"
                         AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False"
-                        OnRowDataBound="ReportsGridView_RowDataBound">
+                        OnRowDataBound="ReportsGridView_RowDataBound" PageSize="20">
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />

@@ -42,8 +42,14 @@ public partial class Overview : System.Web.UI.Page
             }
         }
 
+        /* Google's scaling option doesn't appear to work :( */
+        int total = segment1 + segment2 + segment3;
+        int scale1 = segment1 * 100 / total;
+        int scale2 = segment2 * 100 / total;
+        int scale3 = segment3 * 100 / total;
+
         /* %2B is '+' which otherwise doesn't show up */
-        IssuesPerAppGraphImage.ImageUrl = "http://chart.apis.google.com/chart?chs=200x150&cht=p&chl=1-5|6-25|26%2B&chds=100&chd=t:" + segment1 + "," + segment2 + "," + segment3;
+        IssuesPerAppGraphImage.ImageUrl = "http://chart.apis.google.com/chart?chs=200x150&cht=p&chl=1-5|6-25|26%2B&chd=t:" + scale1 + "," + scale2 + "," + scale3;
     }
     protected void MostNeededGridView_RowDataBound(object sender, GridViewRowEventArgs e)
     {

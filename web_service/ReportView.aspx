@@ -20,8 +20,8 @@ See report details
                             </SelectParameters>
                         </asp:SqlDataSource>
                         <asp:SqlDataSource ID="ReportWithMetadataSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT rep.id, meta.importance, meta.application_name, rep.reporter_name, rep.reporter_email, rep.reporter_homepage, def.display_name, meta.application_type FROM report rep, report_metadata meta, moma_definition def WHERE meta.report_id = rep.id AND rep.moma_definition_id = def.id AND rep.id = @id;"
-                            UpdateCommand="UPDATE report_metadata SET application_name = @application_name, importance = @importance, application_type = @application_type WHERE report_id = @id;">
+                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT rep.id, meta.importance, meta.application_name, rep.reporter_name, rep.reporter_email, rep.reporter_homepage, def.display_name, rep.application_type FROM report rep, report_metadata meta, moma_definition def WHERE meta.report_id = rep.id AND rep.moma_definition_id = def.id AND rep.id = @id;"
+                            UpdateCommand="UPDATE report_metadata SET application_name = @application_name, importance = @importance, application_type = @application_type WHERE report_id = @id; UPDATE report SET application_type = @application_type WHERE id = @id;">
                             <SelectParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID"
                                     Type="Int32" />
@@ -64,7 +64,23 @@ See report details
                                     ReadOnly="True" />
                                 <asp:BoundField DataField="display_name" HeaderText="Framework Version" 
                                     ReadOnly="True" />
-                                <asp:BoundField DataField="application_type" HeaderText="Application Type" />
+                                <asp:TemplateField HeaderText="Application Type">
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="ApplicationTypeDropDownList" runat="server" SelectedValue='<%# Bind("application_type") %>'>
+                                            <asp:ListItem>Corporate Website</asp:ListItem>
+                                            <asp:ListItem>Public Website</asp:ListItem>
+                                            <asp:ListItem>Corporate Desktop Application</asp:ListItem>
+                                            <asp:ListItem>Desktop Application for Resale</asp:ListItem>
+                                            <asp:ListItem>Web Application for Resale</asp:ListItem>
+                                            <asp:ListItem>Open Source Project</asp:ListItem>
+                                            <asp:ListItem>Other</asp:ListItem>
+                                            <asp:ListItem Value="">[Not set]</asp:ListItem>
+                                        </asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="ApplicationTypeLabel" runat="server" Text='<%# Bind("application_type") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
                                 <asp:CommandField ShowEditButton="True" />
                             </Fields>
                         </asp:DetailsView>
