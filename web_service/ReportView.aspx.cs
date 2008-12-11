@@ -38,11 +38,14 @@ public partial class ReportView : System.Web.UI.Page
                 CommentsLabel.Visible = false;
                 ReportDetailsLabel.Visible = false;
                 IssuesGridView.Visible = false;
+                CurrentIssuesGridView.Visible = false;
                 ReportIssuesLabel.Visible = false;
+                ReportCurrentIssuesLabel.Visible = false;
 
                 NoSuchReportLabel.Visible = true;
             }
 
+#if DISABLE_FOR_NOW
             MembershipUser user = Membership.GetUser(Page.User.Identity.Name);
             Label email_content_label = (Label)LoginView1.FindControl("EmailContent");
 
@@ -51,6 +54,7 @@ public partial class ReportView : System.Web.UI.Page
             {
                 /* Logged-in user, but not the owner of the report */
             }
+#endif
 
             if (!Page.IsPostBack)
             {
@@ -181,12 +185,12 @@ public partial class ReportView : System.Web.UI.Page
             }
         }
     }
-    protected void PagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+    protected void ReportedIssuesPagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DropDownList ddl = (DropDownList)sender;
         IssuesGridView.PageSize = int.Parse(ddl.SelectedValue);
     }
-    protected void PagerGotoTextBox_TextChanged(object sender, EventArgs e)
+    protected void ReportedIssuesPagerGotoTextBox_TextChanged(object sender, EventArgs e)
     {
         TextBox tb = (TextBox)sender;
 
@@ -205,6 +209,29 @@ public partial class ReportView : System.Web.UI.Page
     protected void IssuesGridView_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         GridView gv = (GridView)sender;
+
+        if (gv.SortExpression.Length > 0)
+        {
+            int cellIndex = -1;
+
+            foreach (DataControlField field in gv.Columns)
+            {
+                if (field.SortExpression == gv.SortExpression)
+                {
+                    cellIndex = gv.Columns.IndexOf(field);
+                    break;
+                }
+            }
+
+            if (cellIndex > -1)
+            {
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
+                    // Set alternating row style
+                    e.Row.Cells[cellIndex].CssClass = e.Row.RowIndex % 2 == 0 ? "gv_col_sort_alternating" : "gv_col_sort";
+                }
+            }
+        }
 
         if (e.Row.RowType == DataControlRowType.Pager)
         {
@@ -231,6 +258,39 @@ public partial class ReportView : System.Web.UI.Page
                 e.Row.Cells[3].Text = method.Substring(0, brace_start + 1) + "...)";
             }
             e.Row.Cells[3].ToolTip = method;
+        }
+    }
+    protected void CurrentIssuesPagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DropDownList ddl = (DropDownList)sender;
+        CurrentIssuesGridView.PageSize = int.Parse(ddl.SelectedValue);
+    }
+    protected void CurrentIssuesPagerGotoTextBox_TextChanged(object sender, EventArgs e)
+    {
+        TextBox tb = (TextBox)sender;
+
+        int pagenum;
+        if (int.TryParse(tb.Text.Trim(), out pagenum) &&
+            pagenum > 0 &&
+            pagenum <= CurrentIssuesGridView.PageCount)
+        {
+            CurrentIssuesGridView.PageIndex = pagenum - 1;
+        }
+        else
+        {
+            CurrentIssuesGridView.PageIndex = 0;
+        }
+    }
+    protected void IssuesGridView_PreRender(object sender, EventArgs e)
+    {
+        GridView grid = (GridView)sender;
+        if (grid != null)
+        {
+            GridViewRow pagerRow = (GridViewRow)grid.BottomPagerRow;
+            if (pagerRow != null)
+            {
+                pagerRow.Visible = true;
+            }
         }
     }
 }
