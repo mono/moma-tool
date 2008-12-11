@@ -9,16 +9,36 @@
         EnableCaching="True" CacheDuration="300">
     </asp:SqlDataSource>
     <asp:SqlDataSource ID="MostNeededSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY Apps DESC LIMIT 20;"
+        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.reports, i.method_namespace, i.method_class, i.method_name, i.lookup_name FROM (SELECT COUNT(DISTINCT(report_id)) AS reports, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id AND issue.is_latest_definition = true) AS i WHERE c.issue_id = i.id ORDER BY reports DESC LIMIT 20;"
         EnableCaching="True" CacheDuration="300">
     </asp:SqlDataSource>
     <asp:SqlDataSource ID="IssuesPerAppSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report GROUP BY report_id;"
+        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT total AS count FROM report;"
+        EnableCaching="True" CacheDuration="300">
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="IssuesPerAppNowSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
+        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(report_id) AS Count FROM issue_report, issue WHERE issue_report.issue_id = issue.id AND issue.is_latest_definition = true GROUP BY report_id;"
+        EnableCaching="True" CacheDuration="300">
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="StatsSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
+        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT COUNT(id) AS Count FROM report;"
         EnableCaching="True" CacheDuration="300">
     </asp:SqlDataSource>
     <div id="sidebar">
-        <asp:Label ID="IssuesPerAppLabel" runat="server" Text="<h3>Issues per Application:</h3>"></asp:Label>
+        <asp:Label runat="server" Text="<h3>Statistics:</h3>"></asp:Label>
+        <asp:DetailsView ID="StatsDetailsView" runat="server" AutoGenerateRows="False" DataSourceID="StatsSqlDataSource">
+            <AlternatingRowStyle CssClass="dv_row_alternating" />
+            <FieldHeaderStyle CssClass="dv_field_header" Font-Bold="true" />
+            <Fields>
+                <asp:BoundField DataField="count" HeaderText="Report Count:" />
+            </Fields>
+        </asp:DetailsView>
+        <br /><br />
+        <asp:Label ID="IssuesPerAppLabel" runat="server" Text="<h3>Issues per Application (as reported):</h3>"></asp:Label>
         <asp:Image ID="IssuesPerAppGraphImage" runat="server" Height="150" Width="200" />
+        <br /><br />
+        <asp:Label ID="IssuesPerAppNowLabel" runat="server" Text="<h3>Issues per Application (latest mono version):</h3>"></asp:Label>
+        <asp:Image ID="IssuesPerAppNowGraphImage" runat="server" Height="150" Width="200" />
     </div>
     <asp:Label ID="Latest20Label" runat="server" Text="<h3>Latest 20 Reports:</h3>"></asp:Label>
     <br />
@@ -26,8 +46,15 @@
         <AnonymousTemplate>
             <asp:GridView ID="Anon_Latest20GridView" runat="server" AutoGenerateColumns="False"
                 DataSourceID="Latest20SqlDataSource">
-                <Columns>
-                    <asp:BoundField DataField="report_date" HeaderText="Date" />
+                    <AlternatingRowStyle CssClass="gv_col_alternating" />
+                    <HeaderStyle CssClass="gv_header" />
+                    <Columns>
+                    <asp:TemplateField HeaderText="Date" SortExpression="report_date">
+                        <ItemTemplate>
+                            <%-- Shorten the date --%>
+                            <asp:Label ID="Label1" runat="server" Text='<%# ((DateTime)Eval("report_date")).ToShortDateString () %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="display_name" HeaderText="Profile" />
                     <asp:BoundField DataField="miss" HeaderText="MISS" />
                     <asp:BoundField DataField="niex" HeaderText="NIEX" />
@@ -41,10 +68,17 @@
             <asp:RoleGroup Roles="Novell">
                 <ContentTemplate>
                     <asp:GridView ID="Novell_Latest20GridView" runat="server" AutoGenerateColumns="False" DataSourceID="Latest20SqlDataSource">
+                        <AlternatingRowStyle CssClass="gv_col_alternating" />
+                        <HeaderStyle CssClass="gv_header" />
                         <Columns>
                             <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/ReportView.aspx?ReportID={0}"
                                 HeaderText="ID" Text=">>" />
-                            <asp:BoundField DataField="report_date" HeaderText="Date" />
+                            <asp:TemplateField HeaderText="Date" SortExpression="report_date">
+                                <ItemTemplate>
+                                    <%-- Shorten the date --%>
+                                    <asp:Label ID="Label1" runat="server" Text='<%# ((DateTime)Eval("report_date")).ToShortDateString () %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
                             <asp:BoundField DataField="reporter_name" HeaderText="Name" />
                             <asp:BoundField DataField="display_name" HeaderText="Profile" />
                             <asp:BoundField DataField="miss" HeaderText="MISS" />
@@ -65,8 +99,15 @@
         <LoggedInTemplate>
             <asp:GridView ID="LoggedIn_Latest20GridView" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="Latest20SqlDataSource">
+                <AlternatingRowStyle CssClass="gv_col_alternating" />
+                <HeaderStyle CssClass="gv_header" />
                 <Columns>
-                    <asp:BoundField DataField="report_date" HeaderText="Date" />
+                    <asp:TemplateField HeaderText="Date" SortExpression="report_date">
+                        <ItemTemplate>
+                            <%-- Shorten the date --%>
+                            <asp:Label ID="Label1" runat="server" Text='<%# ((DateTime)Eval("report_date")).ToShortDateString () %>'></asp:Label>
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:BoundField DataField="display_name" HeaderText="Profile" />
                     <asp:BoundField DataField="miss" HeaderText="MISS" />
                     <asp:BoundField DataField="niex" HeaderText="NIEX" />
@@ -82,12 +123,14 @@
     <br />
     <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False"
         DataSourceID="MostNeededSqlDataSource" OnRowDataBound="MostNeededGridView_RowDataBound">
+        <AlternatingRowStyle CssClass="gv_col_alternating" />
+        <HeaderStyle CssClass="gv_header" />
         <Columns>
             <asp:BoundField DataField="method_namespace" HeaderText="Namespace" />
             <asp:BoundField DataField="method_class" HeaderText="Class" />
             <asp:BoundField DataField="method_name" HeaderText="Method" />
-            <asp:BoundField DataField="display_name" HeaderText="Type" />
-            <asp:BoundField DataField="Apps" HeaderText="Apps" />
+            <asp:BoundField DataField="lookup_name" HeaderText="Type" />
+            <asp:BoundField DataField="reports" HeaderText="Reports" />
         </Columns>
     </asp:GridView>
 </asp:Content>
