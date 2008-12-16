@@ -65,7 +65,9 @@
                                 <asp:Button ID="Novell_FilterButton" runat="server" Text="Update" OnClick="FilterButton_Click" />
                             </div>
                             <asp:GridView ID="Novell_ReportsGridView" runat="server" DataSourceID="SubmissionsSqlDataSource"
-                                AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound" PageSize="30">
+                                AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" 
+                                OnRowDataBound="ReportsGridView_RowDataBound" PageSize="30" 
+                                onprerender="ReportsGridView_PreRender">
                                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                                 <HeaderStyle CssClass="gv_header" />
                                 <PagerStyle CssClass="gv_pager" />
@@ -186,7 +188,8 @@
                     </div>
                     <asp:GridView ID="LoggedIn_ReportsGridView" runat="server" DataSourceID="SubmissionsSqlDataSource"
                         AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False"
-                        OnRowDataBound="ReportsGridView_RowDataBound" PageSize="20">
+                        OnRowDataBound="ReportsGridView_RowDataBound" PageSize="20" 
+                        onprerender="ReportsGridView_PreRender">
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />

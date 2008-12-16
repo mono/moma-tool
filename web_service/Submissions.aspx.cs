@@ -51,10 +51,9 @@ public partial class Submissions : System.Web.UI.Page
                     catch (FormatException) { }
                 }
 
+                string imp_filter = string.Empty;
                 foreach (ListItem item in Novell_ImportanceCheckBoxList.Items)
                 {
-                    string imp_filter = string.Empty;
-
                     if (item.Selected)
                     {
                         if (imp_filter != string.Empty)
@@ -63,16 +62,16 @@ public partial class Submissions : System.Web.UI.Page
                         }
                         imp_filter += "importance='" + item.Value + "'";
                     }
+                }
 
-                    if (imp_filter != string.Empty)
+                if (imp_filter != string.Empty)
+                {
+                    if (filter != string.Empty)
                     {
-                        if (filter != string.Empty)
-                        {
-                            filter += " AND ";
-                        }
-
-                        filter += "(" + imp_filter + ")";
+                        filter += " AND ";
                     }
+
+                    filter += "(" + imp_filter + ")";
                 }
 
                 if (Novell_AppNameFilterTextBox.Text != string.Empty)
@@ -85,10 +84,9 @@ public partial class Submissions : System.Web.UI.Page
                     filter += "application_name='" + Novell_AppNameFilterTextBox.Text + "'";
                 }
 
+                string type_filter = string.Empty;
                 foreach (ListItem item in Novell_AppTypeCheckBoxList.Items)
                 {
-                    string type_filter = string.Empty;
-
                     if (item.Selected)
                     {
                         if (type_filter != string.Empty)
@@ -97,15 +95,16 @@ public partial class Submissions : System.Web.UI.Page
                         }
                         type_filter += "application_type='" + item.Value + "'";
                     }
-                    if (type_filter != string.Empty)
-                    {
-                        if (filter != string.Empty)
-                        {
-                            filter += " AND ";
-                        }
+                }
 
-                        filter += "(" + type_filter + ")";
+                if (type_filter != string.Empty)
+                {
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
                     }
+
+                    filter += "(" + type_filter + ")";
                 }
 
                 if (Novell_ProfileFilterDropDownList.SelectedItem != null &&
@@ -152,10 +151,9 @@ public partial class Submissions : System.Web.UI.Page
                     catch (FormatException) { }
                 }
 
+                string type_filter = string.Empty;
                 foreach (ListItem item in LoggedIn_AppTypeCheckBoxList.Items)
                 {
-                    string type_filter = string.Empty;
-
                     if (item.Selected)
                     {
                         if (type_filter != string.Empty)
@@ -164,15 +162,16 @@ public partial class Submissions : System.Web.UI.Page
                         }
                         type_filter += "application_type='" + item.Value + "'";
                     }
-                    if (type_filter != string.Empty)
-                    {
-                        if (filter != string.Empty)
-                        {
-                            filter += " AND ";
-                        }
+                }
 
-                        filter += "(" + type_filter + ")";
+                if (type_filter != string.Empty)
+                {
+                    if (filter != string.Empty)
+                    {
+                        filter += " AND ";
                     }
+
+                    filter += "(" + type_filter + ")";
                 }
 
                 if (LoggedIn_ProfileFilterDropDownList.SelectedItem != null &&
@@ -304,7 +303,6 @@ public partial class Submissions : System.Web.UI.Page
             pager_page_size_ddl.SelectedValue = gv.PageSize.ToString();
         }
     }
-
     public string FormatIssueCount(string count)
     {
         /* count should be either blank (representing zero) or hold an integer */
@@ -315,6 +313,18 @@ public partial class Submissions : System.Web.UI.Page
         else
         {
             return count;
+        }
+    }
+    protected void ReportsGridView_PreRender(object sender, EventArgs e)
+    {
+        GridView grid = (GridView)sender;
+        if (grid != null)
+        {
+            GridViewRow pagerRow = (GridViewRow)grid.BottomPagerRow;
+            if (pagerRow != null)
+            {
+                pagerRow.Visible = true;
+            }
         }
     }
 }
