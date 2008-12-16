@@ -20,8 +20,7 @@
             </div>
         </AnonymousTemplate>
         <LoggedInTemplate>
-            <asp:ChangePassword ID="ChangePassword1" runat="server">
-            </asp:ChangePassword>
+            You are already logged in!
         </LoggedInTemplate>
     </asp:LoginView>
 </asp:Content>

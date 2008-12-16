@@ -43,9 +43,12 @@ public partial class Login : System.Web.UI.Page
     }
     protected void Login1_LoggedIn(object sender, EventArgs e)
     {
-        /* Override the ReturnURL.  When I figure out how to disable it
-         * for specific pages like Verify, it can be restored for the others.
+        /* Override the ReturnURL for specific pages like Verify.
          */
-        Response.Redirect("~/Overview.aspx");
+        string return_url = Request.QueryString["ReturnUrl"];
+        if (return_url == null || return_url.Contains("Verify.aspx"))
+        {
+            Response.Redirect("~/Overview.aspx");
+        }
     }
 }

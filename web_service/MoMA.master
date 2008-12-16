@@ -35,22 +35,22 @@
             <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="True" EnableScriptLocalization="True" />
             <div id="header">
                 <h1>MoMA Studio</h1>
-                <div class="login">
-                    <asp:LoginName ID="LoginName1" runat="server" />
-                    <asp:LoginStatus ID="LoginStatus1" runat="server" />
-                </div>
                 <asp:LoginView ID="LoginView1" runat="server">
                     <AnonymousTemplate>
                         <ul>
                             <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
+                            <!--<li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>-->
+                            <li id="menu-login"><a href="Login.aspx">Login</a></li>
                         </ul>
                     </AnonymousTemplate>
                     <LoggedInTemplate>
                         <ul>
                             <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
+                            <!--<li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>-->
                             <li id="menu-reportview"><a href="ReportView.aspx">Individual Report</a></li>
                             <li id="menu-apireport"><a href="APIReport.aspx">API Report</a></li>
                             <li id="menu-submissions"><a href="Submissions.aspx">Submissions Report</a></li>
+                            <li id="menu-myaccount"><a href="MyAccount.aspx">My Account</a></li>
                         </ul>
                     </LoggedInTemplate>
                 </asp:LoginView>
