@@ -35,8 +35,9 @@
                         <asp:Button ID="IssueFilterButton" runat="server" Text="Update" OnClick="IssueFilterButton_Click" />
                     </div>
                     <asp:GridView ID="IssuesGridView" runat="server" AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource"
-                        AllowPaging="True" AllowSorting="True" PageSize="10" 
-                        onrowdatabound="IssuesGridView_RowDataBound">
+                        AllowPaging="True" AllowSorting="True" PageSize="30" 
+                        onrowdatabound="IssuesGridView_RowDataBound" 
+                        onprerender="IssuesGridView_PreRender">
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />
@@ -51,9 +52,9 @@
                             <asp:Label ID="PagerRowsLabel" runat="server" Text="Show rows:" />
                             <asp:DropDownList ID="PagerPageSizeDropDownList" runat="server" AutoPostBack="true"
                                 OnSelectedIndexChanged="PagerPageSizeDropDownList_SelectedIndexChanged">
-                                <asp:ListItem Value="10"></asp:ListItem>
-                                <asp:ListItem Value="20"></asp:ListItem>
                                 <asp:ListItem Value="30"></asp:ListItem>
+                                <asp:ListItem Value="50"></asp:ListItem>
+                                <asp:ListItem Value="100"></asp:ListItem>
                             </asp:DropDownList>
                             Page
                             <asp:TextBox ID="PagerGotoTextBox" runat="server" AutoPostBack="true"

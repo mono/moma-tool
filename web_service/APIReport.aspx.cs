@@ -159,4 +159,16 @@ public partial class APIReport : System.Web.UI.Page
             }
         }
     }
+    protected void IssuesGridView_PreRender(object sender, EventArgs e)
+    {
+        GridView grid = (GridView)sender;
+        if (grid != null)
+        {
+            GridViewRow pagerRow = (GridViewRow)grid.BottomPagerRow;
+            if (pagerRow != null)
+            {
+                pagerRow.Visible = true;
+            }
+        }
+    }
 }
