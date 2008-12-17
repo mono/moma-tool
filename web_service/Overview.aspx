@@ -8,10 +8,6 @@
         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT rep.id, rep.report_date, rep.reporter_name, def.display_name, meta.importance, rep.miss, rep.niex, rep.pinv, rep.todo, rep.total FROM moma_definition def, report rep, report_metadata meta WHERE rep.moma_definition_id = def.id AND rep.id = meta.report_id ORDER BY rep.report_date DESC LIMIT 20;"
         EnableCaching="True" CacheDuration="300">
     </asp:SqlDataSource>
-    <asp:SqlDataSource ID="MostNeededSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-        ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT c.reports, i.method_namespace, i.method_class, i.method_name, i.lookup_name FROM (SELECT COUNT(DISTINCT(report_id)) AS reports, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id AND issue.is_latest_definition = true) AS i WHERE c.issue_id = i.id ORDER BY reports DESC LIMIT 20;"
-        EnableCaching="True" CacheDuration="300">
-    </asp:SqlDataSource>
     <asp:SqlDataSource ID="IssuesPerAppSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT total AS count FROM report;"
         EnableCaching="True" CacheDuration="300">
@@ -118,19 +114,4 @@
             </asp:GridView>
         </LoggedInTemplate>
     </asp:LoginView>
-    <br />
-    <asp:Label ID="MostNeededLabel" runat="server" Text="<h3>Most needed API:</h3>"></asp:Label>
-    <br />
-    <asp:GridView ID="MostNeededGridView" runat="server" AutoGenerateColumns="False"
-        DataSourceID="MostNeededSqlDataSource" OnRowDataBound="MostNeededGridView_RowDataBound">
-        <AlternatingRowStyle CssClass="gv_col_alternating" />
-        <HeaderStyle CssClass="gv_header" />
-        <Columns>
-            <asp:BoundField DataField="method_namespace" HeaderText="Namespace" />
-            <asp:BoundField DataField="method_class" HeaderText="Class" />
-            <asp:BoundField DataField="method_name" HeaderText="Method" />
-            <asp:BoundField DataField="lookup_name" HeaderText="Type" />
-            <asp:BoundField DataField="reports" HeaderText="Reports" />
-        </Columns>
-    </asp:GridView>
 </asp:Content>

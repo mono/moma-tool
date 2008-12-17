@@ -133,29 +133,30 @@ public partial class APIReport : System.Web.UI.Page
             brace_start = method.IndexOf('(');
             brace_end = method.IndexOf(')');
 
+            /* This is all highly dependent on column order :( */
             if (brace_start + 1 < brace_end)
             {
                 /* Got some parameters */
-                e.Row.Cells[3].Text = method.Substring(0, brace_start + 1) + "...)";
+                e.Row.Cells[5].Text = method.Substring(0, brace_start + 1) + "...)";
             }
-            e.Row.Cells[3].ToolTip = method;
+            e.Row.Cells[5].ToolTip = method;
 
-            if (e.Row.Cells[1].Text.Length > 25)
+            if (e.Row.Cells[3].Text.Length > 22)
             {
-                e.Row.Cells[1].ToolTip = e.Row.Cells[1].Text;
-                e.Row.Cells[1].Text = e.Row.Cells[1].Text.Substring(0, 22) + "...";
+                e.Row.Cells[3].ToolTip = e.Row.Cells[3].Text;
+                e.Row.Cells[3].Text = e.Row.Cells[3].Text.Substring(0, 19) + "...";
             }
 
-            if (e.Row.Cells[2].Text.Length > 25)
+            if (e.Row.Cells[4].Text.Length > 22)
             {
-                e.Row.Cells[2].ToolTip = e.Row.Cells[2].Text;
-                e.Row.Cells[2].Text = e.Row.Cells[2].Text.Substring(0, 22) + "...";
+                e.Row.Cells[4].ToolTip = e.Row.Cells[4].Text;
+                e.Row.Cells[4].Text = e.Row.Cells[4].Text.Substring(0, 19) + "...";
             }
 
-            if (e.Row.Cells[3].Text.Length > 25)
+            if (e.Row.Cells[5].Text.Length > 22)
             {
                 /* Already done ToolTip for this column */
-                e.Row.Cells[3].Text = e.Row.Cells[3].Text.Substring(0, 22) + "...";
+                e.Row.Cells[5].Text = e.Row.Cells[5].Text.Substring(0, 19) + "...";
             }
         }
     }

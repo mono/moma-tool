@@ -2,7 +2,7 @@
 
 
 <asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" runat="server">
-    A list of all reported issues
+    A list of all reported outstanding issues
 </asp:Content>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="BodyContentPlaceHolder" runat="Server">
     <asp:LoginView ID="LoginView1" runat="server">
@@ -15,7 +15,7 @@
                     <%-- Need something in the filter here so it will actually filter at all --%>
                     <asp:SqlDataSource ID="IssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>"
-                        SelectCommand="SELECT c.apps, i.method_namespace, i.method_class, i.method_name, i.display_name, i.lookup_name FROM (SELECT COUNT(DISTINCT(report_id)) AS Apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id) AS i WHERE c.issue_id = i.id ORDER BY apps DESC;"
+                        SelectCommand="SELECT c.total, c.apps, c.total/c.apps AS totalperapp, i.method_namespace, i.method_class, i.method_name, i.display_name, i.lookup_name FROM (SELECT COUNT(report_id) AS total, COUNT(DISTINCT(report_id)) AS apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id AND (issue.is_latest_definition = true OR issue_type.lookup_name = 'PINV')) AS i WHERE c.issue_id = i.id ORDER BY total DESC;"
                         CacheDuration="300" EnableCaching="True" FilterExpression="lookup_name = 'TODO'"
                         OnFiltering="IssuesSqlDataSource_Filtering">
                     </asp:SqlDataSource>
@@ -42,7 +42,9 @@
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />
                         <Columns>
-                            <asp:BoundField DataField="Apps" HeaderText="Apps" SortExpression="apps" />
+                            <asp:BoundField DataField="total" HeaderText="Count" SortExpression="total" />
+                            <asp:BoundField DataField="apps" HeaderText="Apps" SortExpression="apps" />
+                            <asp:BoundField DataField="totalperapp" HeaderText="Ratio" SortExpression="totalperapp" />
                             <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
                             <asp:BoundField DataField="method_class" HeaderText="Class" SortExpression="method_class" />
                             <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />

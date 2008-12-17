@@ -95,24 +95,4 @@ public partial class Overview : System.Web.UI.Page
         /* %2B is '+' which otherwise doesn't show up */
         IssuesPerAppNowGraphImage.ImageUrl = "http://chart.apis.google.com/chart?chs=200x150&cht=p&chl=0|1-5|6-25|26%2B&chd=t:" + scale4 + "," + scale1 + "," + scale2 + "," + scale3;
     }
-    protected void MostNeededGridView_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        GridView gv = (GridView)sender;
-
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            string method = DataBinder.Eval(e.Row.DataItem, "method_name").ToString();
-            int brace_start, brace_end;
-
-            brace_start = method.IndexOf('(');
-            brace_end = method.IndexOf(')');
-
-            if (brace_start + 1 < brace_end)
-            {
-                /* Got some parameters */
-                e.Row.Cells[2].Text = method.Substring(0, brace_start + 1) + "...)";
-            }
-            e.Row.Cells[2].ToolTip = method;
-        }
-    }
 }
