@@ -39,7 +39,7 @@
                     <AnonymousTemplate>
                         <ul>
                             <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
-                            <!--<li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>-->
+                            <li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>
                             <li id="menu-namespaceview"><a href="NamespaceView.aspx">Namespace</a></li>
                             <li id="menu-login"><a href="Login.aspx">Login</a></li>
                         </ul>
@@ -47,7 +47,7 @@
                     <LoggedInTemplate>
                         <ul>
                             <li id="menu-overview"><a href="Overview.aspx">Overview</a></li>
-                            <!--<li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>-->
+                            <li id="menu-issueview"><a href="IssueView.aspx">Issue</a></li>
                             <li id="menu-namespaceview"><a href="NamespaceView.aspx">Namespace</a></li>
                             <li id="menu-reportview"><a href="ReportView.aspx">Individual Report</a></li>
                             <li id="menu-apireport"><a href="APIReport.aspx">API Report</a></li>

@@ -122,7 +122,7 @@
                 <asp:UpdatePanel ID="IssuesUpdatePanel" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
                         <asp:SqlDataSource ID="IssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id;"
+                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT type.lookup_name, iss.id, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id;"
                             EnableCaching="True" CacheDuration="300">
                             <SelectParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID"
@@ -138,6 +138,8 @@
                             <HeaderStyle CssClass="gv_header" />
                             <PagerStyle CssClass="gv_pager" />
                             <Columns>
+                            <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
+                                HeaderText="ID" Text=">>" SortExpression="id" />                            
                                 <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
                                 <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
                                 <asp:BoundField DataField="method_class" HeaderText="Classname" SortExpression="method_class" />
@@ -171,7 +173,7 @@
                 <asp:UpdatePanel ID="CurrentIssuesUpdatePanel" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
                         <asp:SqlDataSource ID="CurrentIssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
-                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT type.lookup_name, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id AND iss.is_latest_definition = true;"
+                            ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT type.lookup_name, iss.id, iss.method_namespace, iss.method_class, iss.method_name FROM issue_type type, issue iss, issue_report rep WHERE rep.report_id = @id AND rep.issue_id = iss.id AND iss.issue_type_id = type.id AND iss.is_latest_definition = true;"
                             EnableCaching="True" CacheDuration="300">
                             <SelectParameters>
                                 <asp:QueryStringParameter DefaultValue="1" Name="id" QueryStringField="ReportID"
@@ -187,6 +189,8 @@
                             <HeaderStyle CssClass="gv_header" />
                             <PagerStyle CssClass="gv_pager" />
                             <Columns>
+                                <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
+                                    HeaderText="ID" Text=">>" SortExpression="id" />
                                 <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
                                 <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
                                 <asp:BoundField DataField="method_class" HeaderText="Classname" SortExpression="method_class" />

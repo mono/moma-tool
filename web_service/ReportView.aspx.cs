@@ -255,9 +255,9 @@ public partial class ReportView : System.Web.UI.Page
             if (brace_start + 1 < brace_end)
             {
                 /* Got some parameters */
-                e.Row.Cells[3].Text = method.Substring(0, brace_start + 1) + "...)";
+                e.Row.Cells[4].Text = method.Substring(0, brace_start + 1) + "...)";
             }
-            e.Row.Cells[3].ToolTip = method;
+            e.Row.Cells[4].ToolTip = method;
         }
     }
     protected void CurrentIssuesPagerPageSizeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
