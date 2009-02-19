@@ -16,6 +16,8 @@ using Npgsql;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+using MoMATool;
+
 public partial class NamespaceView : System.Web.UI.Page
 {
     int issue_id = 0;
@@ -181,6 +183,8 @@ public partial class NamespaceView : System.Web.UI.Page
         {
             default_ns = (string)issue_data[0]["method_namespace"];
             default_cls = (string)issue_data[0]["method_class"];
+            string method = (string)issue_data[0]["method_name"];
+            string iss_type = (string)issue_data[0]["lookup_name"];
 
             IssueDetailsView.DataBind();
 
@@ -195,6 +199,12 @@ public partial class NamespaceView : System.Web.UI.Page
             {
                 FixedLabel.Visible = false;
             }
+
+            DisqusComments.DisqusTitle = default_ns + "." + default_cls + "::" + method + " [" + iss_type + "]";
+            DisqusComments.DisqusMessage = "Mono Issue: " + DisqusComments.DisqusTitle;
+            DisqusComments.DisqusIdentifier = "issue-" + id.ToString();
+            DisqusComments.DisqusURL = Page.Request.Url.GetLeftPart(UriPartial.Path) + "?IssueID=" + id.ToString();
+            DisqusComments.DoUpdate();
 
             if (Page.User.Identity.IsAuthenticated)
             {

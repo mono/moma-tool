@@ -32,7 +32,11 @@
     <div id="page">
         <form id="form1" runat="server">
         <div>
-            <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="True" EnableScriptLocalization="True" />
+            <asp:ScriptManager ID="ScriptManager1" runat="server" EnableScriptGlobalization="True" EnableScriptLocalization="True">
+            <Services>
+                <asp:ServiceReference Path="~/DisqusProxy.asmx" />
+            </Services>
+            </asp:ScriptManager>
             <div id="header">
                 <h1>MoMA Studio</h1>
                 <asp:LoginView ID="LoginView1" runat="server">

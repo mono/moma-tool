@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/MoMA.master" AutoEventWireup="true" CodeFile="IssueView.aspx.cs" Inherits="NamespaceView" Title="MoMA Studio - View Issue" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Namespace="MoMATool" TagPrefix="disqus" %>
 <%-- Have to disable event validation for this page, due to the dynamically populated cascading drop down lists --%>
 
 <asp:Content ID="ContentHeaderContent" ContentPlaceHolderID="ContentHeaderPlaceholder" Runat="Server">
@@ -245,6 +246,11 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </LoggedInTemplate>
-    </asp:LoginView>    
+    </asp:LoginView>
+    <asp:UpdatePanel ID="IssuesCommentsUpdatePanel" runat="server">
+        <ContentTemplate>
+            <disqus:DisqusControl ID="DisqusComments" Width="900px" DisqusForum="mono-momastudio-issues" DisqusDeveloper="true" runat="server"></disqus:DisqusControl>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 </asp:Content>
 
