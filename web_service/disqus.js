@@ -111,6 +111,9 @@ MoMATool.DisqusControl.prototype = {
         if (disqus_identifier !== null && disqus_message != null && disqus_title != null) {
             // call the thread creation proxy service to make sure the correct disqus thread gets
             // created on demand, and load the iframe when the proxy returns
+            
+            var forum = this._disqusForum; // makes it easier to reference in the EnsureThreadCreated closure
+            
             DisqusProxy.EnsureThreadCreated(disqus_title, disqus_message, disqus_identifier, function(success) {
                 var disqus_control_iframe = document.getElementById(value);
                 var doc = disqus_control_iframe.contentDocument;
@@ -122,24 +125,32 @@ MoMATool.DisqusControl.prototype = {
             
                 // The doctype is needed for IE to load the stylesheet contained inside embed.js.  Except something
                 // seems to have broken it again. &#@%ing IE.  Workaround by ripping the CSS out of embed.js and
-                // referencing it directly.
+                // referencing it directly.  The 'disqus_no_style' setting is needed for firefox when the CSS is
+                // directly referenced.
             
-                doc.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' +
+                var iframe_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n' +
                     '<html xmlns="http://www.w3.org/1999/xhtml">\n' +
                     '<head>\n' +
                     '<title>Disqus Comments</title>\n' +
                     '<link href="disqus.css" type="text/css" rel="stylesheet" media="screen"></link>\n' +
                     '</head><body>\n' +
                     '<' + 'script charset="utf-8" type="text/javascript">\n' +
-                    '<!--//--><![CDATA[//><!--\n' +
-                    'var disqus_developer = 1;\n' +
-                    'var disqus_identifier = "' + disqus_identifier + '";\n' +
+                    '<!--//--><![CDATA[//><!--\n';
+                    
+                if (disqus_developer) {
+                    iframe_html += 'var disqus_developer = 1;\n';
+                }
+                
+                iframe_html += 'var disqus_identifier = "' + disqus_identifier + '";\n' +
+                    'window.disqus_no_style = true;\n' +
                     '//--><!]]>\n' +
                     '<' + '/script>\n' +
                     '<div id="disqus_thread"></div>\n' +
-                    '<' + 'script type="text/javascript" src="http://disqus.com/forums/mono-momastudio-issues/embed.js"><' + '/script>\n' +
+                    '<' + 'script type="text/javascript" src="http://disqus.com/forums/' + forum + '/embed.js"><' + '/script>\n' +
                     '<a href="http://disqus.com" class="dsq-brlink">Comments powered by <span class="logo-disqus">Disqus</span></a>\n' +
-                    '</body></html>');
+                    '</body></html>';
+                    
+                doc.write(iframe_html);
                 doc.close();
             
                 // Resize the iframe whenever Disqus loads its content.  The fudge factor is needed to ensure

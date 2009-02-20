@@ -249,7 +249,7 @@
     </asp:LoginView>
     <asp:UpdatePanel ID="IssuesCommentsUpdatePanel" runat="server">
         <ContentTemplate>
-            <disqus:DisqusControl ID="DisqusComments" Width="900px" DisqusForum="mono-momastudio-issues" DisqusDeveloper="true" runat="server"></disqus:DisqusControl>
+            <disqus:DisqusControl ID="DisqusComments" Width="900px" DisqusForum="mono-momastudio-issues" DisqusDeveloper="false" runat="server"></disqus:DisqusControl>
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>
