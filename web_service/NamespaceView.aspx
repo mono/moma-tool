@@ -10,19 +10,19 @@
     <asp:SqlDataSource ID="NamespaceStatsSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT miss.act_miss, niex.act_niex, todo.act_todo, miss.app_miss, niex.app_niex, todo.app_todo, miss.rep_miss, niex.rep_niex, todo.rep_todo FROM issue LEFT JOIN (SELECT COUNT(DISTINCT(issue.id)) AS act_miss, COUNT(DISTINCT(issue_report.report_id)) AS app_miss, COUNT(issue_report.report_id) AS rep_miss, issue.method_namespace FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'MISS' AND issue_report.issue_id = issue.id AND issue.is_latest_definition = true AND issue.method_namespace = @ns GROUP BY method_namespace) AS miss ON miss.method_namespace = issue.method_namespace LEFT JOIN (SELECT COUNT(DISTINCT(issue.id)) AS act_niex, COUNT(DISTINCT(issue_report.report_id)) AS app_niex, COUNT(issue_report.report_id) AS rep_niex, issue.method_namespace FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'NIEX' AND issue_report.issue_id = issue.id AND issue.is_latest_definition = true AND issue.method_namespace = @ns GROUP BY method_namespace) AS niex ON niex.method_namespace = issue.method_namespace LEFT JOIN (SELECT COUNT(DISTINCT(issue.id)) AS act_todo, COUNT(DISTINCT(issue_report.report_id)) AS app_todo, COUNT(issue_report.report_id) AS rep_todo, issue.method_namespace FROM issue_report, issue, issue_type WHERE issue.issue_type_id = issue_type.id AND issue_type.lookup_name = 'TODO' AND issue_report.issue_id = issue.id AND issue.is_latest_definition = true AND issue.method_namespace = @ns GROUP BY method_namespace) AS todo ON todo.method_namespace = issue.method_namespace WHERE issue.method_namespace = @ns;">
         <SelectParameters>
-            <asp:QueryStringParameter DefaultValue="System" Name="ns" QueryStringField="Namespace" Type="String" />
+            <asp:Parameter DefaultValue="System" Name="ns" Type="String" />
         </SelectParameters>
     </asp:SqlDataSource>
     <asp:SqlDataSource ID="NamespaceIssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.lookup_name FROM issue_type, issue, issue_report WHERE issue.is_latest_definition = true AND issue.issue_type_id = issue_type.id AND issue.method_namespace = @ns AND issue_report.issue_id = issue.id ORDER BY issue.method_class, issue.method_name;">
         <SelectParameters>
-            <asp:QueryStringParameter DefaultValue="System" Name="ns" QueryStringField="Namespace" Type="String" />
+            <asp:Parameter DefaultValue="System" Name="ns" Type="String" />
         </SelectParameters>
     </asp:SqlDataSource>
     <asp:SqlDataSource ID="NamespaceReportsSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>" SelectCommand="SELECT DISTINCT rep.id, rep.report_date, meta.importance, meta.application_name, rep.application_type, rep.reporter_name, rep.reporter_organization, def.display_name, rep.miss, rep.niex, rep.pinv, rep.todo, rep.total FROM report rep, report_metadata meta, moma_definition def, issue_report, issue WHERE issue.is_latest_definition = true AND issue.method_namespace = @ns AND issue_report.issue_id = issue.id AND issue_report.report_id = rep.id AND rep.moma_definition_id = def.id AND rep.id = meta.report_id ORDER by rep.report_date ASC;">
         <SelectParameters>
-            <asp:QueryStringParameter DefaultValue="System" Name="ns" QueryStringField="Namespace" Type="String" />
+            <asp:Parameter DefaultValue="System" Name="ns" Type="String" />
         </SelectParameters>
     </asp:SqlDataSource>
     <div id="sidebar">
@@ -42,47 +42,47 @@
                 <AlternatingRowStyle CssClass="dv_row_alternating" />
                 <FieldHeaderStyle CssClass="dv_field_header" Font-Bold="true" />
                 <Fields>
-                    <asp:TemplateField HeaderText="Issues That Have Been Reported: MISS">
+                    <asp:TemplateField HeaderText="Number Of Distinct Issues That Have Been Reported: MISS">
                         <ItemTemplate>
                             <asp:Label ID="Label1" runat="server" Text='<%# FormatIssueCount (Eval("act_miss").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Issues That Have Been Reported: NIEX">
+                    <asp:TemplateField HeaderText="Number Of Distinct Issues That Have Been Reported: NIEX">
                         <ItemTemplate>
                             <asp:Label ID="Label2" runat="server" Text='<%# FormatIssueCount (Eval("act_niex").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Issues That Have Been Reported: TODO">
+                    <asp:TemplateField HeaderText="Number Of Distinct Issues That Have Been Reported: TODO">
                         <ItemTemplate>
                             <asp:Label ID="Label3" runat="server" Text='<%# FormatIssueCount (Eval("act_todo").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Reports Containing: MISS">
+                    <asp:TemplateField HeaderText="Number Of Submissions Containing: MISS">
                         <ItemTemplate>
                             <asp:Label ID="Label4" runat="server" Text='<%# FormatIssueCount (Eval("app_miss").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Reports Containing: NIEX">
+                    <asp:TemplateField HeaderText="Number Of Submissions Containing: NIEX">
                         <ItemTemplate>
                             <asp:Label ID="Label5" runat="server" Text='<%# FormatIssueCount (Eval("app_niex").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Reports Containing: TODO">
+                    <asp:TemplateField HeaderText="Number Of Submissions Containing: TODO">
                         <ItemTemplate>
                             <asp:Label ID="Label6" runat="server" Text='<%# FormatIssueCount (Eval("app_todo").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Total Reports: MISS">
+                    <asp:TemplateField HeaderText="Total Number Of Reports (Multiple Issue Counts Per Submission): MISS">
                         <ItemTemplate>
                             <asp:Label ID="Label7" runat="server" Text='<%# FormatIssueCount (Eval("rep_miss").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Total Reports: NIEX">
+                    <asp:TemplateField HeaderText="Total Number Of Reports (Multiple Issue Counts Per Submission): NIEX">
                         <ItemTemplate>
                             <asp:Label ID="Label8" runat="server" Text='<%# FormatIssueCount (Eval("rep_niex").ToString()) %>'></asp:Label>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Total Reports: TODO">
+                    <asp:TemplateField HeaderText="Total Number Of Reports (Multiple Issue Counts Per Submission): TODO">
                         <ItemTemplate>
                             <asp:Label ID="Label9" runat="server" Text='<%# FormatIssueCount (Eval("rep_todo").ToString()) %>'></asp:Label>
                         </ItemTemplate>
@@ -97,6 +97,7 @@
             <asp:GridView ID="IssuesGridView" runat="server" DataSourceID="NamespaceIssuesSqlDataSource"
                 AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="IssuesGridView_RowDataBound"
                 PageSize="20" OnPreRender="IssuesGridView_PreRender">
+                <RowStyle CssClass="gv_col" />
                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                 <HeaderStyle CssClass="gv_header" />
                 <PagerStyle CssClass="gv_pager" />
@@ -149,6 +150,7 @@
                             <asp:GridView ID="Novell_ReportsGridView" runat="server" DataSourceID="NamespaceReportsSqlDataSource"
                                 AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound"
                                 PageSize="30" OnPreRender="ReportsGridView_PreRender">
+                                <RowStyle CssClass="gv_col" />
                                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                                 <HeaderStyle CssClass="gv_header" />
                                 <PagerStyle CssClass="gv_pager" />
@@ -238,6 +240,7 @@
                     <asp:GridView ID="LoggedIn_ReportsGridView" runat="server" DataSourceID="NamespaceReportsSqlDataSource"
                         AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound"
                         PageSize="20" OnPreRender="ReportsGridView_PreRender">
+                        <RowStyle CssClass="gv_col" />
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />

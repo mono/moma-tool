@@ -65,6 +65,16 @@
     background-color: #e5e5e5;
 }
 
+.gv_col a
+{
+    font-weight: normal;
+}
+
+.gv_col_alternating a
+{
+    font-weight: normal;
+}
+
 .dv_field_header
 {
     background-color: #e5e5e5;

@@ -68,6 +68,7 @@
                                 AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" 
                                 OnRowDataBound="ReportsGridView_RowDataBound" PageSize="30" 
                                 onprerender="ReportsGridView_PreRender">
+                                <RowStyle CssClass="gv_col" />
                                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                                 <HeaderStyle CssClass="gv_header" />
                                 <PagerStyle CssClass="gv_pager" />
@@ -190,6 +191,7 @@
                         AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False"
                         OnRowDataBound="ReportsGridView_RowDataBound" PageSize="20" 
                         onprerender="ReportsGridView_PreRender">
+                        <RowStyle CssClass="gv_col" />
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />

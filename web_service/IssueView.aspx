@@ -249,8 +249,13 @@
     </asp:LoginView>
     <asp:UpdatePanel ID="IssuesCommentsUpdatePanel" runat="server">
         <ContentTemplate>
+            <br /><br />
             <disqus:DisqusControl ID="DisqusComments" Width="900px" DisqusForum="mono-momastudio-issues" DisqusDeveloper="false" runat="server"></disqus:DisqusControl>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <br style="clear: both" /><br /><br />
+    <asp:Label ID="Label1" runat="server" Text="Jump to Issue:"></asp:Label>
+    <asp:TextBox ID="IssueIDTextBox" runat="server" AutoPostBack="True" MaxLength="7"
+        OnTextChanged="IssueIDTextBox_TextChanged"></asp:TextBox>
 </asp:Content>
 

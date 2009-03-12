@@ -293,4 +293,17 @@ public partial class ReportView : System.Web.UI.Page
             }
         }
     }
+    protected void ReportIDTextBox_TextChanged(object sender, EventArgs e)
+    {
+        TextBox reportid_tb = (TextBox)LoginView1.FindControl("ReportIDTextBox");
+        int new_id = Int32.Parse(reportid_tb.Text);
+
+        if (new_id > 0)
+        {
+            UriBuilder redirect = new UriBuilder(Page.Request.Url);
+            redirect.Query = "ReportID=" + new_id.ToString();
+
+            Page.Response.Redirect(redirect.ToString(), true);
+        }
+    }
 }

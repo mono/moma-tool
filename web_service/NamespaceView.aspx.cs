@@ -13,20 +13,20 @@ using System.Xml.Linq;
 
 public partial class NamespaceView : System.Web.UI.Page
 {
-    string ns;
+    string query_ns;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
         {
-            ns = Request.QueryString["Namespace"];
-            if (ns == null)
+            query_ns = Request.QueryString["Namespace"];
+            if (query_ns == null)
             {
-                ns = "System";
+                query_ns = "System";
             }
-            StatsLabel.Text = "<h3>Statistics for " + ns + "</h3>";
 
             PopulateTree();
+            BindData(query_ns);
         }
     }
 
@@ -76,11 +76,11 @@ public partial class NamespaceView : System.Web.UI.Page
             {
                 parent.Add(node);
             }
-            if (valuepath == ns)
+            if (valuepath == query_ns)
             {
                 node.Selected = true;
             }
-            else if (!ns.StartsWith(valuepath))
+            else if (!query_ns.StartsWith(valuepath))
             {
                 node.Collapse();
             }
@@ -92,26 +92,35 @@ public partial class NamespaceView : System.Web.UI.Page
         TreeView tv = (TreeView)sender;
         TreeNode node = tv.SelectedNode;
 
-        StatsLabel.Text = "<h3>Statistics for " + node.ValuePath + "</h3>";
+        BindData(node.ValuePath);
+    }
 
-        NamespaceStatsSqlDataSource.SelectParameters["ns"].DefaultValue = node.ValuePath;
+    private void BindData(string ns)
+    {
+        StatsLabel.Text = "<h3>Statistics for " + ns + "</h3>";
+
+        NamespaceStatsSqlDataSource.SelectParameters["ns"].DefaultValue = ns;
         StatsDetailsView.DataBind();
 
-        NamespaceIssuesSqlDataSource.SelectParameters["ns"].DefaultValue = node.ValuePath;
+        NamespaceIssuesSqlDataSource.SelectParameters["ns"].DefaultValue = ns;
         IssuesGridView.DataBind();
 
         if (Page.User.Identity.IsAuthenticated)
         {
-            NamespaceReportsSqlDataSource.SelectParameters["ns"].DefaultValue = node.ValuePath;
+            GridView gv;
+            NamespaceReportsSqlDataSource.SelectParameters["ns"].DefaultValue = ns;
 
             if (Page.User.IsInRole("Novell"))
             {
-                Novell_ReportsGridView.DataBind();
+                //Novell_ReportsGridView.DataBind();
+                gv = (GridView)LoginView1.FindControl("Novell_ReportsGridView");
             }
             else
             {
-                LoggedIn_ReportsGridView.DataBind();
+                //LoggedIn_ReportsGridView.DataBind();
+                gv = (GridView)LoginView1.FindControl("LoggedIn_ReportsGridView");
             }
+            gv.DataBind();
         }
     }
 

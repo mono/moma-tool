@@ -181,6 +181,17 @@ public partial class NamespaceView : System.Web.UI.Page
         DataView issue_data = (DataView)IssueByQueryIDSqlDataSource.Select(DataSourceSelectArguments.Empty);
         if (issue_data.Count == 1)
         {
+            if (issue_id != id)
+            {
+                /* A new issue has been selected.  Force a reload so that any Disqus comments entered
+                 * (which will cause another reload) will know which issue to display
+                 */
+                UriBuilder redirect = new UriBuilder(Page.Request.Url);
+                redirect.Query = "IssueID=" + id.ToString();
+
+                Page.Response.Redirect(redirect.ToString(), true);
+            }
+
             default_ns = (string)issue_data[0]["method_namespace"];
             default_cls = (string)issue_data[0]["method_class"];
             string method = (string)issue_data[0]["method_name"];
@@ -203,7 +214,7 @@ public partial class NamespaceView : System.Web.UI.Page
             DisqusComments.DisqusTitle = default_ns + "." + default_cls + "::" + method + " [" + iss_type + "]";
             DisqusComments.DisqusMessage = "Mono Issue: " + DisqusComments.DisqusTitle;
             DisqusComments.DisqusIdentifier = "issue-" + id.ToString();
-            DisqusComments.DisqusURL = Page.Request.Url.GetLeftPart(UriPartial.Path) + "?IssueID=" + id.ToString();
+            //DisqusComments.DisqusURL = Page.Request.Url.GetLeftPart(UriPartial.Path) + "?IssueID=" + id.ToString();
             DisqusComments.DoUpdate();
 
             if (Page.User.Identity.IsAuthenticated)
@@ -342,6 +353,18 @@ public partial class NamespaceView : System.Web.UI.Page
             {
                 pagerRow.Visible = true;
             }
+        }
+    }
+    protected void IssueIDTextBox_TextChanged(object sender, EventArgs e)
+    {
+        int new_id = Int32.Parse(IssueIDTextBox.Text);
+
+        if (new_id > 0)
+        {
+            UriBuilder redirect = new UriBuilder(Page.Request.Url);
+            redirect.Query = "IssueID=" + new_id.ToString();
+
+            Page.Response.Redirect(redirect.ToString(), true);
         }
     }
 }

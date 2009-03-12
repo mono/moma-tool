@@ -42,6 +42,7 @@
         <AnonymousTemplate>
             <asp:GridView ID="Anon_Latest20GridView" runat="server" AutoGenerateColumns="False"
                 DataSourceID="Latest20SqlDataSource">
+                    <RowStyle CssClass="gv_col" />
                     <AlternatingRowStyle CssClass="gv_col_alternating" />
                     <HeaderStyle CssClass="gv_header" />
                     <Columns>
@@ -64,6 +65,7 @@
             <asp:RoleGroup Roles="Novell">
                 <ContentTemplate>
                     <asp:GridView ID="Novell_Latest20GridView" runat="server" AutoGenerateColumns="False" DataSourceID="Latest20SqlDataSource">
+                        <RowStyle CssClass="gv_col" />
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <Columns>
@@ -95,6 +97,7 @@
         <LoggedInTemplate>
             <asp:GridView ID="LoggedIn_Latest20GridView" runat="server" AutoGenerateColumns="False" 
                 DataSourceID="Latest20SqlDataSource">
+                <RowStyle CssClass="gv_col" />
                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                 <HeaderStyle CssClass="gv_header" />
                 <Columns>

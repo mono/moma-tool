@@ -15,7 +15,7 @@
                     <%-- Need something in the filter here so it will actually filter at all --%>
                     <asp:SqlDataSource ID="IssuesSqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:MomaDB %>"
                         ProviderName="<%$ ConnectionStrings:MomaDB.ProviderName %>"
-                        SelectCommand="SELECT c.total, c.apps, c.total/c.apps AS totalperapp, i.method_namespace, i.method_class, i.method_name, i.display_name, i.lookup_name FROM (SELECT COUNT(report_id) AS total, COUNT(DISTINCT(report_id)) AS apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id AND (issue.is_latest_definition = true OR issue_type.lookup_name = 'PINV')) AS i WHERE c.issue_id = i.id ORDER BY total DESC;"
+                        SelectCommand="SELECT c.total, c.apps, c.total/c.apps AS totalperapp, i.id, i.method_namespace, i.method_class, i.method_name, i.display_name, i.lookup_name FROM (SELECT COUNT(report_id) AS total, COUNT(DISTINCT(report_id)) AS apps, issue_id FROM issue_report GROUP BY issue_id) as c, (SELECT issue.id, issue.method_namespace, issue.method_class, issue.method_name, issue_type.display_name, issue_type.lookup_name FROM issue, issue_type WHERE issue_type.id = issue.issue_type_id AND (issue.is_latest_definition = true OR issue_type.lookup_name = 'PINV')) AS i WHERE c.issue_id = i.id ORDER BY total DESC;"
                         CacheDuration="300" EnableCaching="True" FilterExpression="lookup_name = 'TODO'"
                         OnFiltering="IssuesSqlDataSource_Filtering">
                     </asp:SqlDataSource>
@@ -38,6 +38,7 @@
                         AllowPaging="True" AllowSorting="True" PageSize="30" 
                         onrowdatabound="IssuesGridView_RowDataBound" 
                         onprerender="IssuesGridView_PreRender">
+                        <RowStyle CssClass="gv_col" />
                         <AlternatingRowStyle CssClass="gv_col_alternating" />
                         <HeaderStyle CssClass="gv_header" />
                         <PagerStyle CssClass="gv_pager" />
@@ -45,9 +46,14 @@
                             <asp:BoundField DataField="total" HeaderText="Count" SortExpression="total" />
                             <asp:BoundField DataField="apps" HeaderText="Apps" SortExpression="apps" />
                             <asp:BoundField DataField="totalperapp" HeaderText="Ratio" SortExpression="totalperapp" />
-                            <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
+                            <asp:HyperLinkField DataNavigateUrlFormatString="~/NamespaceView.aspx?Namespace={0}" 
+                                    DataNavigateUrlFields="method_namespace" HeaderText="Namespace" 
+                                    SortExpression="method_namespace" DataTextField="method_namespace" />
                             <asp:BoundField DataField="method_class" HeaderText="Class" SortExpression="method_class" />
-                            <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />
+                            <asp:HyperLinkField DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
+                                    DataNavigateUrlFields="id" HeaderText="Method"
+                                    SortExpression="method_name" DataTextField="method_name" />
+                            <%-- %><asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />--%>
                             <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
                         </Columns>
                         <PagerTemplate>

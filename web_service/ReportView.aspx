@@ -134,14 +134,17 @@
                             AutoGenerateColumns="False" DataSourceID="IssuesSqlDataSource" 
                             OnRowDataBound="IssuesGridView_RowDataBound" 
                             onprerender="IssuesGridView_PreRender">
+                            <RowStyle CssClass="gv_col" />
                             <AlternatingRowStyle CssClass="gv_col_alternating" />
                             <HeaderStyle CssClass="gv_header" />
                             <PagerStyle CssClass="gv_pager" />
                             <Columns>
-                            <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
-                                HeaderText="ID" Text=">>" SortExpression="id" />                            
+                                <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
+                                    HeaderText="ID" Text=">>" SortExpression="id" />
                                 <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
-                                <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
+                                <asp:HyperLinkField DataNavigateUrlFormatString="~/NamespaceView.aspx?Namespace={0}" 
+                                    DataNavigateUrlFields="method_namespace" HeaderText="Namespace" 
+                                    SortExpression="method_namespace" DataTextField="method_namespace" />
                                 <asp:BoundField DataField="method_class" HeaderText="Classname" SortExpression="method_class" />
                                 <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />
                             </Columns>
@@ -185,6 +188,7 @@
                             AutoGenerateColumns="False" DataSourceID="CurrentIssuesSqlDataSource" 
                             OnRowDataBound="IssuesGridView_RowDataBound" 
                             onprerender="IssuesGridView_PreRender">
+                            <RowStyle CssClass="gv_col" />
                             <AlternatingRowStyle CssClass="gv_col_alternating" />
                             <HeaderStyle CssClass="gv_header" />
                             <PagerStyle CssClass="gv_pager" />
@@ -192,7 +196,9 @@
                                 <asp:HyperLinkField DataNavigateUrlFields="id" DataNavigateUrlFormatString="~/IssueView.aspx?IssueID={0}"
                                     HeaderText="ID" Text=">>" SortExpression="id" />
                                 <asp:BoundField DataField="lookup_name" HeaderText="Type" SortExpression="lookup_name" />
-                                <asp:BoundField DataField="method_namespace" HeaderText="Namespace" SortExpression="method_namespace" />
+                                <asp:HyperLinkField DataNavigateUrlFormatString="~/NamespaceView.aspx?Namespace={0}" 
+                                    DataNavigateUrlFields="method_namespace" HeaderText="Namespace" 
+                                    SortExpression="method_namespace" DataTextField="method_namespace" />
                                 <asp:BoundField DataField="method_class" HeaderText="Classname" SortExpression="method_class" />
                                 <asp:BoundField DataField="method_name" HeaderText="Method" SortExpression="method_name" />
                             </Columns>
@@ -226,6 +232,10 @@
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </div>
+            <br style="clear: both" /><br /><br />
+            <asp:Label ID="Label1" runat="server" Text="Jump to Report:"></asp:Label>
+            <asp:TextBox ID="ReportIDTextBox" runat="server" AutoPostBack="True" 
+                MaxLength="7" ontextchanged="ReportIDTextBox_TextChanged"></asp:TextBox>
         </LoggedInTemplate>
     </asp:LoginView>
 </asp:Content>

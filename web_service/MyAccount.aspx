@@ -29,6 +29,7 @@
             <asp:GridView ID="MyReportsGridView" runat="server" AllowPaging="True" AllowSorting="True"
                 AutoGenerateColumns="False" OnRowDataBound="ReportsGridView_RowDataBound" 
                 PageSize="10" onprerender="MyReportsGridView_PreRender">
+                <RowStyle CssClass="gv_col" />
                 <AlternatingRowStyle CssClass="gv_col_alternating" />
                 <HeaderStyle CssClass="gv_header" />
                 <PagerStyle CssClass="gv_pager" />

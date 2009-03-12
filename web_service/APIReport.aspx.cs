@@ -127,7 +127,10 @@ public partial class APIReport : System.Web.UI.Page
         }
         else if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            string method = DataBinder.Eval(e.Row.DataItem, "method_name").ToString();
+            HyperLink ns_hyper = (HyperLink)(e.Row.Cells[3].Controls[0]);
+            HyperLink meth_hyper = (HyperLink)(e.Row.Cells[5].Controls[0]);
+
+            string method = meth_hyper.Text; //DataBinder.Eval(e.Row.DataItem, "method_name").ToString();
             int brace_start, brace_end;
 
             brace_start = method.IndexOf('(');
@@ -137,14 +140,14 @@ public partial class APIReport : System.Web.UI.Page
             if (brace_start + 1 < brace_end)
             {
                 /* Got some parameters */
-                e.Row.Cells[5].Text = method.Substring(0, brace_start + 1) + "...)";
+                meth_hyper.Text = method.Substring(0, brace_start + 1) + "...)";
             }
-            e.Row.Cells[5].ToolTip = method;
+            meth_hyper.ToolTip = method;
 
-            if (e.Row.Cells[3].Text.Length > 22)
+            if (ns_hyper.Text.Length > 22)
             {
-                e.Row.Cells[3].ToolTip = e.Row.Cells[3].Text;
-                e.Row.Cells[3].Text = e.Row.Cells[3].Text.Substring(0, 19) + "...";
+                ns_hyper.ToolTip = ns_hyper.Text;
+                ns_hyper.Text = ns_hyper.Text.Substring(0, 19) + "...";
             }
 
             if (e.Row.Cells[4].Text.Length > 22)
@@ -153,10 +156,10 @@ public partial class APIReport : System.Web.UI.Page
                 e.Row.Cells[4].Text = e.Row.Cells[4].Text.Substring(0, 19) + "...";
             }
 
-            if (e.Row.Cells[5].Text.Length > 22)
+            if (meth_hyper.Text.Length > 22)
             {
                 /* Already done ToolTip for this column */
-                e.Row.Cells[5].Text = e.Row.Cells[5].Text.Substring(0, 19) + "...";
+                meth_hyper.Text = meth_hyper.Text.Substring(0, 19) + "...";
             }
         }
     }
